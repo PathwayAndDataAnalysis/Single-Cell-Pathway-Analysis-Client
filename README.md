@@ -39,7 +39,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 Installing nvm using nvm
 
 ```bash
-nvm install 14
+nvm install 16
 ```
 
 Check version
