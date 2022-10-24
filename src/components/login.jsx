@@ -1,9 +1,10 @@
 import {useState} from "react";
 import axios from "axios";
 import {InputTextField} from "./inputTextField";
-import {LoginButton} from "./loginButton";
+import {LoginButton} from "./buttons/loginButton";
 import {ForgetPasswordButton} from "./buttons/forgetPasswordButton";
 import {RegisterButton} from "./buttons/registerButton";
+import {Link} from "react-router-dom";
 
 export function Login() {
     const [data, setData] = useState({email: "", password: ""});
@@ -77,7 +78,7 @@ export function Login() {
                                 />
                             </div>
 
-                            <LoginButton/>
+                            <LoginButton buttonName={"Login"}/>
 
                         </form>
                     </div>
@@ -89,7 +90,9 @@ export function Login() {
                             </div>
 
                             <div class='text-center sm:text-right  whitespace-nowrap'>
-                                <RegisterButton onClick={handleRegister}/>
+                                <Link to={"/register"}>
+                                    <RegisterButton onClick={handleRegister}/>
+                                </Link>
                             </div>
                         </div>
                     </div>
