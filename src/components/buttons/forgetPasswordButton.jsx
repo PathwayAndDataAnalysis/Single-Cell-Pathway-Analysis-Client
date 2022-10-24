@@ -2,7 +2,7 @@ export function ForgetPasswordButton(props) {
     return (
         <button
             onClick={props.onClick}
-            className='transition duration-200 mx-5 px-5 py-4 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset'>
+            className='transition duration-200 mx-5 px-5 py-3 cursor-pointer font-normal text-sm rounded-lg text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-200 focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 ring-inset'>
             <svg
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
