@@ -92,7 +92,9 @@ export function Login() {
 					<div class='py-5'>
 						<div class='grid grid-cols-2 gap-1'>
 							<div class='text-center sm:text-left whitespace-nowrap'>
-								<ForgetPasswordButton onClick={handleForgetPassword} />
+								<Link to='/forget-password'>
+									<ForgetPasswordButton onClick={handleForgetPassword} />
+								</Link>
 							</div>
 
 							<div class='text-center sm:text-right  whitespace-nowrap'>
