@@ -8,7 +8,7 @@ export function UploadData(props) {
                        id='file'
                        name='file'
                        className='bg-gray-500 hover:bg-gray-500 text-white text-xs py-1 px-6 w-400 rounded-md ml-6'
-                       multiple={true}
+                       // multiple={true}
                        onChange={props.onFileChange}/>
 
                 <button type='button'
