@@ -3,7 +3,7 @@ import {InputTextField} from "./inputTextField";
 import {LoginButton} from "./buttons/loginButton";
 import {BackToLoginButton} from "./buttons/backToLoginButton";
 import {Link} from "react-router-dom";
-import axios from "axios";
+import {registerUser} from "./api/apiHandlers";
 
 export function Register() {
     const [inputFullName, setInputFullName] = useState("");
@@ -34,11 +34,8 @@ export function Register() {
             password: inputPassword,
         };
 
-        console.log(registerInfo);
-
-        axios.post("http://127.0.0.1:8000/auth/register/", registerInfo)
+        registerUser(registerInfo)
             .then((response) => {
-                    console.log(response);
                     setInputFullName("");
                     setInputEmail("");
                     setInputPassword("");
@@ -119,6 +116,7 @@ export function Register() {
                 </div>
 
             </div>
+
         </div>
     );
 }

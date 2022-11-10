@@ -1,35 +1,32 @@
 import NavBar from "../navBar";
 import {UploadData} from "../other/uploadData";
-import axios from "axios";
-import {FileItem} from "../other/fileItem";
+import {FileItemLayout} from "../other/fileItemLayout";
 import {ActionButton} from "../buttons/actionButton";
+import {deleteFileHandler, getAllAnalysisHandler, getAllFilesHandler, uploadFileHandler} from "../api/apiHandlers";
+import {AnalysisItemLayout} from "../other/analysisItemLayout";
 
 const {Component} = require("react");
 
 class HomePage extends Component {
     componentDidMount() {
         this.getAllFiles();
-        this.getAllAnalysis();
+        // this.getAllAnalysis();
     }
 
     state = {
         selectedFiles: [],
         allFiles: [],
         uploadPercentage: 0,
-        allAnalysis: [],
+        allAnalysis: ["Test Analysis1", "Test Analysis2", "Test Analysis3"]
     };
 
     getAllFiles = () => {
-        axios.get('http://127.0.0.1:8000/file/get_all/')
+        getAllFilesHandler()
             .then(res => {
-                console.log("res.data", res.data.files);
-
                 let temp = [];
                 for (let i = 0; i < res.data['files'].length; i++)
                     temp.push(res.data['files'][i]);
-
                 this.setState({allFiles: temp});
-                console.log("allFiles:    ", this.state.allFiles);
             })
             .catch(err => {
                 console.log(err);
@@ -37,7 +34,7 @@ class HomePage extends Component {
     }
 
     getAllAnalysis = () => {
-        axios.get('http://127.0.0.1:8000/analysis/get_all/')
+        getAllAnalysisHandler()
             .then(res => {
                 let temp = [];
                 for (let i = 0; i < res.data['files'].length; i++)
@@ -50,10 +47,8 @@ class HomePage extends Component {
     }
 
     deleteFile = (file) => {
-        axios
-            .post('http://127.0.0.1:8000/file/delete/', {file: file})
+        deleteFileHandler(file)
             .then((response) => {
-                console.log(response);
                 this.getAllFiles();
             })
             .catch((error) => {
@@ -62,16 +57,10 @@ class HomePage extends Component {
     }
 
     onFileChange = (event) => {
-        console.log(event.target.files)
         this.setState({selectedFiles: event.target.files[0]});
     }
 
     onFileUpload = () => {
-        console.log('uploading');
-        console.log(this.state.selectedFiles);
-
-        const formData = new FormData();
-        formData.append("myFile", this.state.selectedFiles, this.state.selectedFiles.name);
 
         let setPercentage = (completed) => {
             this.setState({uploadPercentage: completed});
@@ -80,17 +69,13 @@ class HomePage extends Component {
         let config = {
             onUploadProgress: function (progressEvent) {
                 let percCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                console.log("percentCompleted:  ", percCompleted);
-
                 setPercentage(percCompleted);
-            }, headers: {'Content-Type': 'multipart/form-data'}
+            },
+            headers: {'Content-Type': 'multipart/form-data'}
         };
 
-
-        axios
-            .post('http://127.0.0.1:8000/file/upload/', formData, config)
+        uploadFileHandler(this.state.selectedFiles, config)
             .then((response) => {
-                console.log(response);
                 this.getAllFiles();
             })
             .catch((error) => {
@@ -122,11 +107,11 @@ class HomePage extends Component {
                                     <p className="text-lg">No files uploaded yet</p>
                                 </div> : // if not empty, show all files
                                 this.state.allFiles.map((file, index) => {
-                                    return (<FileItem keyValue={index}
-                                                      fileName={file['fileName']}
-                                                      fileSize={file['fileSize']}
-                                                      uploadDate={file['uploadDate']}
-                                                      onDeleteClick={this.deleteFile.bind(this, file['fileName'])}
+                                    return (<FileItemLayout keyValue={index}
+                                                            fileName={file['fileName']}
+                                                            fileSize={file['fileSize']}
+                                                            uploadDate={file['uploadDate']}
+                                                            onDeleteClick={this.deleteFile.bind(this, file['fileName'])}
                                     />)
                                 })}
                     </div>
@@ -143,7 +128,10 @@ class HomePage extends Component {
                                 </div> :
                                 this.state.allAnalysis.map((file, index) => {
                                     return (
-                                        <p>{file['fileName']}</p>
+                                        // <p>{file['fileName']}</p>
+                                        <AnalysisItemLayout
+                                            analysisName={file}
+                                        />
                                     )
                                 })
                         }
@@ -152,9 +140,9 @@ class HomePage extends Component {
                             <ActionButton text='New Analysis'
                                           type='button'
                                           onClick={() => {
+                                              window.location = '/new-analysis'
                                           }}
                             />
-
                         </div>
                     </div>
 

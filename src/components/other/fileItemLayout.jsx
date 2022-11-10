@@ -1,4 +1,4 @@
-export function FileItem(props) {
+export function FileItemLayout(props) {
 
     return (
         <div key={props.keyValue} className="flex justify-between items-left hover:bg-gray-300 rounded-md p-2">
@@ -10,7 +10,7 @@ export function FileItem(props) {
             <div className="w-2/5 flex justify-between justify-center items-center">
 
                 <div className="flex justify-end mr-2">
-                    <p className="text-sm">{props.fileSize} KiB</p>
+                    <p className="text-sm">{props.fileSize}</p>
                 </div>
 
                 <div className="flex justify-end justify-center items-center">
