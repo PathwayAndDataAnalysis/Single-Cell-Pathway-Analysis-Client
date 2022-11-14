@@ -4,6 +4,7 @@ import {ActionButton} from "../buttons/actionButton";
 import {DropDownLayout} from "../other/dropDownLayout";
 import {getAllFilesHandler, runAnalysisHandler} from "../api/apiHandlers";
 import {useEffect, useState} from "react";
+import {useLocation} from "react-router";
 
 
 export function NewAnalysis(props) {
@@ -11,9 +12,7 @@ export function NewAnalysis(props) {
     const dimReductionTypes = ["Use PCA", "Use Existing PCA File"];
     const umapTypesArray = ["Use UMAP", "Use Existing UMAP File"];
 
-    useEffect(() => {
-        getAllFiles();
-    }, []);
+    const location = useLocation();
 
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [newAnalysisName, setNewAnalysisName] = useState("");
@@ -27,6 +26,11 @@ export function NewAnalysis(props) {
     const [n_neighbors, setN_neighbors] = useState('');
     const [min_dist, setMin_dist] = useState('');
     const [metric, setMetric] = useState('euclidean');
+
+    useEffect(() => {
+        getAllFiles();
+    }, []);
+
 
     function getAllFiles() {
         getAllFilesHandler()
@@ -86,6 +90,7 @@ export function NewAnalysis(props) {
                     <InputLayout inputFor="Name of the analysis:"
                                  inputId="analysis_name"
                                  placeholder="New Analysis..."
+                                 value={location.state.analysisName}
                                  onChange={(event) => {
                                      setNewAnalysisName(event.target.value);
                                  }}
