@@ -4,7 +4,6 @@ import {FileItemLayout} from "../other/fileItemLayout";
 import {ActionButton} from "../buttons/actionButton";
 import {deleteAnalysisHandler, deleteFileHandler, getAllAnalysisHandler, getAllFilesHandler, uploadFileHandler} from "../api/apiHandlers";
 import {AnalysisItemLayout} from "../other/analysisItemLayout";
-import NewAnalysis from "../pages/newAnalysis";
 
 const {Component} = require("react");
 
@@ -18,7 +17,7 @@ class HomePage extends Component {
         selectedFiles: [],
         allFiles: [],
         uploadPercentage: 0,
-        allAnalysis: []
+        allAnalysis: [],
     };
 
     getAllFiles = () => {
@@ -95,6 +94,7 @@ class HomePage extends Component {
     };
 
     render() {
+
         return (<div>
                 <div>
                     <NavBar/>
@@ -147,7 +147,8 @@ class HomePage extends Component {
 
                                             }}
                                             onEditClick={() => {
-
+                                                this.props.navigation.navigate('analysis',
+                                                    {analysisName: file['analysisName']})
                                             }}
                                             onDeleteClick={this.deleteAnalysis.bind(this, file['analysisName'])}
                                         />
