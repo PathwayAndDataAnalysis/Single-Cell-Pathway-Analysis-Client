@@ -12,6 +12,10 @@ export function deleteFileHandler(file) {
     return axiosClient.post(`file/delete/`, {file: file});
 }
 
+export function deleteAnalysisHandler(analysis) {
+    return axiosClient.post(`analysis/delete/`, {analysis: analysis});
+}
+
 export function getAllFilesHandler() {
     return axiosClient.get(`file/get_all/`);
 }
@@ -25,5 +29,9 @@ export function uploadFileHandler(fileToUpload, config) {
     formData.append("myFile", fileToUpload, fileToUpload.name);
 
     return axiosClient.post(`file/upload/`, formData, config);
+}
+
+export function runAnalysisHandler(analysisParams) {
+    return axiosClient.post(`analysis/run/`, analysisParams);
 }
 

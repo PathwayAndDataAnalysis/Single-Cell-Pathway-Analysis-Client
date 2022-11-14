@@ -2,22 +2,23 @@ import NavBar from "../navBar";
 import {UploadData} from "../other/uploadData";
 import {FileItemLayout} from "../other/fileItemLayout";
 import {ActionButton} from "../buttons/actionButton";
-import {deleteFileHandler, getAllAnalysisHandler, getAllFilesHandler, uploadFileHandler} from "../api/apiHandlers";
+import {deleteAnalysisHandler, deleteFileHandler, getAllAnalysisHandler, getAllFilesHandler, uploadFileHandler} from "../api/apiHandlers";
 import {AnalysisItemLayout} from "../other/analysisItemLayout";
+import NewAnalysis from "../pages/newAnalysis";
 
 const {Component} = require("react");
 
 class HomePage extends Component {
     componentDidMount() {
         this.getAllFiles();
-        // this.getAllAnalysis();
+        this.getAllAnalysis();
     }
 
     state = {
         selectedFiles: [],
         allFiles: [],
         uploadPercentage: 0,
-        allAnalysis: ["Test Analysis1", "Test Analysis2", "Test Analysis3"]
+        allAnalysis: []
     };
 
     getAllFiles = () => {
@@ -37,8 +38,8 @@ class HomePage extends Component {
         getAllAnalysisHandler()
             .then(res => {
                 let temp = [];
-                for (let i = 0; i < res.data['files'].length; i++)
-                    temp.push(res.data['files'][i]);
+                for (let i = 0; i < res.data['analysis'].length; i++)
+                    temp.push(res.data['analysis'][i]);
                 this.setState({allAnalysis: temp});
             })
             .catch(err => {
@@ -50,6 +51,16 @@ class HomePage extends Component {
         deleteFileHandler(file)
             .then((response) => {
                 this.getAllFiles();
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    deleteAnalysis = (analysis) => {
+        deleteAnalysisHandler(analysis)
+            .then((response) => {
+                this.getAllAnalysis();
             })
             .catch((error) => {
                 console.log(error);
@@ -130,7 +141,15 @@ class HomePage extends Component {
                                     return (
                                         // <p>{file['fileName']}</p>
                                         <AnalysisItemLayout
-                                            analysisName={file}
+                                            keyValue={index}
+                                            analysisName={file['analysisName']}
+                                            onViewClick={() => {
+
+                                            }}
+                                            onEditClick={() => {
+
+                                            }}
+                                            onDeleteClick={this.deleteAnalysis.bind(this, file['analysisName'])}
                                         />
                                     )
                                 })
@@ -146,45 +165,8 @@ class HomePage extends Component {
                         </div>
                     </div>
 
-                    {/*{this.state.allFiles.map((file, index) => (<div key={index}*/}
-                    {/*                                                className='
-                    my-4 grid-cols-1 divide-y block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100
-                    '
-                    >*/}
-                    {/*        <div>*/}
-                    {/*            <a href='/home' className=''>*/}
-                    {/*                <h5 className='w-full mb-2 text-2xl font-bold tracking-tight text-gray-900'>*/}
-                    {/*                    {file}*/}
-                    {/*                </h5>*/}
-                    {/*                <p className='font-normal text-gray-700'>*/}
-
-                    {/*                </p>*/}
-                    {/*            </a>*/}
-                    {/*        </div>*/}
-
-                    {/*        <div className='flex flex-row justify-end mt-6'>*/}
-                    {/*            <ActionButton text='Edit'*/}
-                    {/*                          type='button'*/}
-                    {/*                          onClick={() => {*/}
-                    {/*                          }}*/}
-                    {/*            />*/}
-
-                    {/*            <ActionButton text='View'*/}
-                    {/*                          type='button'*/}
-                    {/*                          onClick={() => {*/}
-                    {/*                          }}*/}
-                    {/*            />*/}
-
-                    {/*            <ActionButton text='Delete'*/}
-                    {/*                          type='button'*/}
-                    {/*                          onClick={this.deleteFile.bind(this, file)}*/}
-                    {/*            />*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-
-                    {/*))}*/}
-
                 </div>
+
             </div>
         );
     }

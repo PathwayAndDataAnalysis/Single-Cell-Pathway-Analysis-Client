@@ -2,11 +2,14 @@ import NavBar from "../navBar";
 import {InputLayout} from "../other/inputLayout";
 import {ActionButton} from "../buttons/actionButton";
 import {DropDownLayout} from "../other/dropDownLayout";
-import {getAllFilesHandler} from "../api/apiHandlers";
+import {getAllFilesHandler, runAnalysisHandler} from "../api/apiHandlers";
 
 const {Component} = require("react");
 
 class NewAnalysis extends Component {
+
+    dimReductionTypes = ["Use PCA", "Use Existing PCA File"];
+    umapTypesArray = ["Use UMAP", "Use Existing UMAP File"];
 
     componentDidMount() {
         this.getAllFiles();
@@ -15,6 +18,7 @@ class NewAnalysis extends Component {
     state = {
         uploadedFiles: [],
 
+        newAnalysisName: "",
         selectedDataMatrixFile: "",
         selectedMetaDataFile: "",
 
@@ -22,12 +26,12 @@ class NewAnalysis extends Component {
         pcaCount: '',
         selectedPCAFile: '',
 
-        selectedMethod: true,
+        useUMAP: true,
         selectedUMAPFile: '',
 
         n_neighbors: '',
         min_dist: '',
-        metric: '',
+        metric: 'euclidean',
     }
 
     getAllFiles = () => {
@@ -43,41 +47,6 @@ class NewAnalysis extends Component {
             });
     }
 
-    onDataMatrixFileChange = (event) => {
-        console.log(event.target.value);
-        this.setState({selectedDataMatrixFile: event.target.value});
-    }
-
-    onMetaDataFileChange = (event) => {
-        console.log(event.target.value);
-        this.setState({selectedMetaDataFile: event.target.value});
-    }
-
-    handleUsePCAChange = (event) => {
-        console.log(event.target.value);
-        this.setState({usePCA: event.target.value === "Use PCA"});
-    }
-
-    onPCACountChange = (event) => {
-        console.log(event.target.value);
-        this.setState({pcaCount: event.target.value});
-    }
-
-    handleMethodChange = (event) => {
-        console.log(event.target.value);
-        this.setState({selectedMethod: event.target.value === "Use UMAP"});
-    }
-
-    onPCAFileChange = (event) => {
-        console.log(event.target.value);
-        this.setState({selectedPCAFile: event.target.value});
-    }
-
-    onUMAPFileChange = (event) => {
-        console.log(event.target.value);
-        this.setState({selectedUMAPFile: event.target.value});
-    }
-
     onUMAPParametersChange = (event) => {
         if (event.target.id === "n_neighbors")
             this.setState({n_neighbors: event.target.value});
@@ -86,6 +55,31 @@ class NewAnalysis extends Component {
         else if (event.target.id === "metric")
             this.setState({metric: event.target.value});
 
+    }
+
+    onRunAnalysisClick = () => {
+        let analysisParams = {
+            "analysisName": this.state.newAnalysisName,
+            "dataMatrixFile": this.state.selectedDataMatrixFile,
+            "metaDataFile": this.state.selectedMetaDataFile,
+            "usePCA": this.state.usePCA,
+            "pcaCount": this.state.pcaCount,
+            "selectedPCAFile": this.state.selectedPCAFile,
+            "useUMAP": this.state.useUMAP,
+            "selectedUMAPFile": this.state.selectedUMAPFile,
+            "n_neighbors": this.state.n_neighbors,
+            "min_dist": this.state.min_dist,
+            "metric": this.state.metric,
+        }
+
+        runAnalysisHandler(analysisParams)
+            .then(res => {
+                console.log(res);
+                window.location.href = "/home";
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     render() {
@@ -97,7 +91,14 @@ class NewAnalysis extends Component {
                 <div className='container mx-auto'>
                     <h1 className='text-left text-xl mt-4 mb-2'>Setup Analysis:</h1>
                     <div className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
-                        <InputLayout inputFor="Name of the analysis:" inputId="analysis_name" placeholder="New Analysis..."/>
+                        <InputLayout inputFor="Name of the analysis:"
+                                     inputId="analysis_name"
+                                     placeholder="New Analysis..."
+                                     onChange={(event) => {
+                                         this.setState({newAnalysisName: event.target.value})
+                                     }}
+
+                        />
                     </div>
 
 
@@ -106,13 +107,17 @@ class NewAnalysis extends Component {
                         <DropDownLayout label="Data matrix:"
                                         id="data_matrix"
                                         options={["Select Data Matrix File", ...this.state.uploadedFiles]}
-                                        onChange={this.onDataMatrixFileChange}
+                                        onChange={(event) => {
+                                            this.setState({selectedDataMatrixFile: event.target.value});
+                                        }}
                         />
 
                         <DropDownLayout label="Metadata:"
                                         id="meta_data"
                                         options={["Select Meta Data File", ...this.state.uploadedFiles]}
-                                        onChange={this.onMetaDataFileChange}
+                                        onChange={(event) => {
+                                            this.setState({selectedMetaDataFile: event.target.value});
+                                        }}
                         />
                     </div>
 
@@ -121,28 +126,28 @@ class NewAnalysis extends Component {
                     <div className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
                         <DropDownLayout label="Select one:"
                                         id="pca_dr"
-                                        options={["Use PCA", "Use Existing PCA File"]}
-                                        onChange={this.handleUsePCAChange}/>
+                                        options={this.dimReductionTypes}
+                                        onChange={(event) => {
+                                            this.setState({usePCA: event.target.value === "Use PCA"});
+                                        }}
+                        />
                         {
                             this.state.usePCA ?
                                 <InputLayout inputFor="Number of comp:"
                                              inputId="no_of_comp"
                                              placeholder=""
-                                             onChange={this.onPCACountChange}
+                                             onChange={(event) => {
+                                                 this.setState({pcaCount: event.target.value});
+                                             }}
                                 />
                                 :
                                 <div>
-                                    {/*<FileUploadLayout*/}
-                                    {/*    labelName="PCA File:"*/}
-                                    {/*    onUploadClick={this.onPCAFileUpload}*/}
-                                    {/*    onFileChange={this.onPCAFileChange}*/}
-                                    {/*    uploadPercentage={this.state.pcaFileUploadPercentage}*/}
-                                    {/*/>*/}
-
                                     <DropDownLayout label="Select PCA File:"
                                                     id="pca_file"
                                                     options={["Select Existing PCA File", ...this.state.uploadedFiles]}
-                                                    onChange={this.onPCAFileChange}
+                                                    onChange={(event) => {
+                                                        this.setState({selectedPCAFile: event.target.value});
+                                                    }}
                                     />
 
                                 </div>
@@ -157,11 +162,13 @@ class NewAnalysis extends Component {
                         <DropDownLayout
                             label="Method:"
                             id="method"
-                            options={["Use UMAP", "Use Existing UMAP File"]}
-                            onChange={this.handleMethodChange}
+                            options={this.umapTypesArray}
+                            onChange={(event) => {
+                                this.setState({useUMAP: event.target.value === "Use UMAP"});
+                            }}
                         />
                         {
-                            this.state.selectedMethod ?
+                            this.state.useUMAP ?
 
                                 <div>
                                     <InputLayout
@@ -174,7 +181,9 @@ class NewAnalysis extends Component {
                                         inputFor="min_dist:"
                                         inputId="min_dist"
                                         placeholder="0.1"
-                                        onChange={this.onUMAPParametersChange}
+                                        onChange={(event) => {
+                                            this.setState({min_dist: event.target.value})
+                                        }}
                                     />
                                     <DropDownLayout
                                         label="metric:"
@@ -188,7 +197,9 @@ class NewAnalysis extends Component {
                                     <DropDownLayout label="UMAP File:"
                                                     id="umap_file"
                                                     options={["Select UMAP File", ...this.state.uploadedFiles]}
-                                                    onChange={this.onUMAPFileChange}
+                                                    onChange={(event) => {
+                                                        this.setState({selectedUMAPFile: event.target.value});
+                                                    }}
                                     />
                                 </div>
                         }
@@ -196,10 +207,10 @@ class NewAnalysis extends Component {
 
 
                     <div className='flex flex-row justify-end mt-6'>
-                        <ActionButton type="button" text='Run Analysis' onClick={() => {
-                            console.log("Run Analysis");
-                            console.log(this.state);
-                        }}/>
+                        <ActionButton type="button"
+                                      text='Run Analysis'
+                                      onClick={this.onRunAnalysisClick}
+                        />
 
                         <ActionButton type="button" text='Cancel' onClick={() => {
                             window.location = '/home'
