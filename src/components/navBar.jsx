@@ -9,12 +9,11 @@ export default function NavBar(props) {
                 </a>
 
                 <ul className='flex flex-col p-4 mt-4 bg-gray-50 rounded-lg border border-gray-100 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700'>
-
                     <li>
                         <a href={"/home"}
                            className='block py-2 pr-2 pl-2 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'
                         >
-                            UserName
+                            kisan@gmail.com
                         </a>
                     </li>
 
@@ -25,8 +24,6 @@ export default function NavBar(props) {
                             Logout
                         </a>
                     </li>
-
-
                 </ul>
             </div>
         </nav>

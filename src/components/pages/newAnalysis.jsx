@@ -4,7 +4,7 @@ import {ActionButton} from "../buttons/actionButton";
 import {DropDownLayout} from "../other/dropDownLayout";
 import {getAllFilesHandler, runAnalysisHandler} from "../api/apiHandlers";
 import {useEffect, useState} from "react";
-import {useLocation} from "react-router";
+import {useLocation} from "react-router-dom";
 
 
 export function NewAnalysis(props) {
@@ -13,6 +13,7 @@ export function NewAnalysis(props) {
     const umapTypesArray = ["Use UMAP", "Use Existing UMAP File"];
 
     const location = useLocation();
+
 
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [newAnalysisName, setNewAnalysisName] = useState("");
@@ -29,7 +30,36 @@ export function NewAnalysis(props) {
 
     useEffect(() => {
         getAllFiles();
-    }, []);
+
+        if (location.state === null) {
+            console.log("No state");
+        } else {
+            console.log("State exists");
+            console.log(location.state);
+            setNewAnalysisName(location.state.analysisName);
+            setSelectedDataMatrixFile(location.state.dataMatrixFile);
+            setSelectedMetaDataFile(location.state.metaDataFile);
+
+            if (location.state.usePCA) {
+                setUsePCA(true);
+                setPcaCount(location.state.pcaCount);
+            } else {
+                setUsePCA(false);
+                setSelectedPCAFile(location.state.pcaFile);
+            }
+
+            if (location.state.useUMAP) {
+                setUseUMAP(true);
+                setN_neighbors(location.state.n_neighbors);
+                setMin_dist(location.state.min_dist);
+                setMetric(location.state.metric);
+            } else {
+                setUseUMAP(false);
+                setSelectedUMAPFile(location.state.umapFile);
+            }
+        }
+
+    }, [location.state]);
 
 
     function getAllFiles() {
@@ -79,6 +109,10 @@ export function NewAnalysis(props) {
             });
     }
 
+    function onUpdateAnalysisClick() {
+
+    }
+
     return (<div>
             <div>
                 <NavBar/>
@@ -86,11 +120,12 @@ export function NewAnalysis(props) {
 
             <div className='container mx-auto'>
                 <h1 className='text-left text-xl mt-4 mb-2'>Setup Analysis:</h1>
-                <div className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
+                <div
+                    className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
                     <InputLayout inputFor="Name of the analysis:"
                                  inputId="analysis_name"
                                  placeholder="New Analysis..."
-                                 value={location.state.analysisName}
+                                 value={newAnalysisName}
                                  onChange={(event) => {
                                      setNewAnalysisName(event.target.value);
                                  }}
@@ -100,10 +135,12 @@ export function NewAnalysis(props) {
 
 
                 <h1 className='text-left text-xl mt-4 mb-2'>Data:</h1>
-                <div className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
+                <div
+                    className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
                     <DropDownLayout label="Data matrix:"
                                     id="data_matrix"
                                     options={["Select Data Matrix File", ...uploadedFiles]}
+                                    value={selectedDataMatrixFile}
                                     onChange={(event) => {
                                         setSelectedDataMatrixFile(event.target.value);
                                     }}
@@ -112,6 +149,7 @@ export function NewAnalysis(props) {
                     <DropDownLayout label="Metadata:"
                                     id="meta_data"
                                     options={["Select Meta Data File", ...uploadedFiles]}
+                                    value={selectedMetaDataFile}
                                     onChange={(event) => {
                                         setSelectedMetaDataFile(event.target.value);
                                     }}
@@ -120,10 +158,12 @@ export function NewAnalysis(props) {
 
 
                 <h1 className='text-left text-xl mt-4 mb-2'>Dimension reduction:</h1>
-                <div className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
+                <div
+                    className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
                     <DropDownLayout label="Select one:"
                                     id="pca_dr"
                                     options={dimReductionTypes}
+                                    value={usePCA ? dimReductionTypes[0] : dimReductionTypes[1]}
                                     onChange={(event) => {
                                         setUsePCA(event.target.value === "Use PCA");
                                     }}
@@ -133,6 +173,7 @@ export function NewAnalysis(props) {
                             <InputLayout inputFor="Number of comp:"
                                          inputId="no_of_comp"
                                          placeholder=""
+                                         value={pcaCount}
                                          onChange={(event) => {
                                              setPcaCount(event.target.value);
                                          }}
@@ -142,6 +183,7 @@ export function NewAnalysis(props) {
                                 <DropDownLayout label="Select PCA File:"
                                                 id="pca_file"
                                                 options={["Select Existing PCA File", ...uploadedFiles]}
+                                                value={selectedPCAFile}
                                                 onChange={(event) => {
                                                     setSelectedPCAFile(event.target.value);
                                                 }}
@@ -154,12 +196,14 @@ export function NewAnalysis(props) {
 
 
                 <h1 className='text-left text-xl mt-4 mb-2'>2D projection:</h1>
-                <div className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
+                <div
+                    className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
 
                     <DropDownLayout
                         label="Method:"
                         id="method"
                         options={umapTypesArray}
+                        value={useUMAP ? umapTypesArray[0] : umapTypesArray[1]}
                         onChange={(event) => {
                             setUseUMAP(event.target.value === "Use UMAP");
                         }}
@@ -171,12 +215,14 @@ export function NewAnalysis(props) {
                                     inputFor="n_neighbors:"
                                     inputId="n_neighbors"
                                     placeholder="15"
+                                    value={n_neighbors}
                                     onChange={onUMAPParametersChange}
                                 />
                                 <InputLayout
                                     inputFor="min_dist:"
                                     inputId="min_dist"
                                     placeholder="0.1"
+                                    value={min_dist}
                                     onChange={(event) => {
                                         setMin_dist(event.target.value);
                                     }}
@@ -185,6 +231,7 @@ export function NewAnalysis(props) {
                                     label="metric:"
                                     id="metric"
                                     options={["euclidean", "no euclidean"]}
+                                    value={metric}
                                     onChange={onUMAPParametersChange}
                                 />
                             </div>
@@ -193,6 +240,7 @@ export function NewAnalysis(props) {
                                 <DropDownLayout label="UMAP File:"
                                                 id="umap_file"
                                                 options={["Select UMAP File", ...uploadedFiles]}
+                                                value={selectedUMAPFile}
                                                 onChange={(event) => {
                                                     setSelectedUMAPFile(event.target.value);
                                                 }}
@@ -203,10 +251,18 @@ export function NewAnalysis(props) {
 
 
                 <div className='flex flex-row justify-end mt-6'>
-                    <ActionButton type="button"
-                                  text='Run Analysis'
-                                  onClick={onRunAnalysisClick}
-                    />
+                    {
+                        location.state === null ?
+                            <ActionButton type="button"
+                                          text='Run Analysis'
+                                          onClick={onRunAnalysisClick}
+                            />
+                            :
+                            <ActionButton type="button"
+                                          text='Update Analysis Parameters'
+                                          onClick={onUpdateAnalysisClick}
+                            />
+                    }
 
                     <ActionButton type="button" text='Cancel' onClick={() => {
                         window.location = '/home'
@@ -214,6 +270,9 @@ export function NewAnalysis(props) {
                 </div>
 
             </div>
+
+            {/* Bottom spacing */}
+            <div className='h-12'></div>
 
         </div>
     );

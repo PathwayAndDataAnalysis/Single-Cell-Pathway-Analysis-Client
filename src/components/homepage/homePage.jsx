@@ -2,10 +2,16 @@ import NavBar from "../navBar";
 import {UploadData} from "../other/uploadData";
 import {FileItemLayout} from "../other/fileItemLayout";
 import {ActionButton} from "../buttons/actionButton";
-import {deleteAnalysisHandler, deleteFileHandler, getAllAnalysisHandler, getAllFilesHandler, uploadFileHandler} from "../api/apiHandlers";
+import {
+    deleteAnalysisHandler,
+    deleteFileHandler,
+    getAllAnalysisHandler,
+    getAllFilesHandler,
+    uploadFileHandler
+} from "../api/apiHandlers";
 import {AnalysisItemLayout} from "../other/analysisItemLayout";
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router";
+import {useNavigate} from "react-router-dom";
 
 export function HomePage(props) {
 
@@ -20,7 +26,7 @@ export function HomePage(props) {
     const [allAnalysis, setAllAnalysis] = useState([]);
 
     // Navigation
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     function getAllFiles() {
         getAllFilesHandler()
@@ -70,13 +76,11 @@ export function HomePage(props) {
 
     function onFileChange(event) {
         setSelectedFiles(event.target.files[0]);
-        // this.setState({selectedFiles: event.target.files[0]});
     }
 
     function onFileUpload() {
         let setPercentage = (completed) => {
             setUploadPercentage(completed);
-            // this.setState({uploadPercentage: completed});
         }
 
         let config = {
@@ -140,12 +144,15 @@ export function HomePage(props) {
                             </div> :
                             allAnalysis.map((file, index) => {
                                 return (
-                                    // <p>{file['fileName']}</p>
                                     <AnalysisItemLayout
                                         keyValue={index}
                                         analysisName={file['analysisName']}
                                         onViewClick={() => {
-
+                                            navigate(`/view/analysis/${file['analysisName']}`,
+                                                {
+                                                    state: file['analysisName']
+                                                }
+                                            )
                                         }}
                                         onEditClick={() => {
                                             navigate('/analysis/' + file['analysisName'], {
