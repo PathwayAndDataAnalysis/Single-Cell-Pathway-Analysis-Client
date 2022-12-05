@@ -121,7 +121,8 @@ export function HomePage(props) {
                         allFiles.length === 0 ? // if empty, show empty layout
                             <div className="flex justify-center items-center p-4">
                                 <p className="text-lg">No files uploaded yet</p>
-                            </div> : // if not empty, show all files
+                            </div> :
+                            // if not empty, show all files
                             allFiles.map((file, index) => {
                                 return (<FileItemLayout keyValue={index}
                                                         fileName={file['fileName']}

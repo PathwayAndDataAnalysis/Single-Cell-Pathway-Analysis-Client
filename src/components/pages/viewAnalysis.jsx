@@ -2,8 +2,14 @@ import NavBar from "../navBar";
 import {DropDownLayoutCompact} from "../other/dropDownLayoutCompact";
 import {InputLayoutCompact} from "../other/inputLayoutCompact";
 import {ActionButton} from "../buttons/actionButton";
+// import {ScatterPlot} from "../other/scatterPlot";
+import {useLocation} from "react-router-dom";
+import {ScatterPlotNew} from "../other/scatterPlotNew";
 
 export function ViewAnalysis(props) {
+
+    const {state} = useLocation();
+    console.log("state" + state);
 
     return (<div>
         <div>
@@ -13,7 +19,8 @@ export function ViewAnalysis(props) {
         <div className='container mx-auto'>
             <div className="grid grid-cols-4 gap-2 my-4">
                 <div className="h-screen col-span-3 bg-gray-50 rounded-md">
-                    <h1>graph here.</h1>
+                    <ScatterPlotNew analysisName={state}/>
+
                 </div>
 
                 <div className="h-screen col-span-1 bg-gray-100 rounded-md py-8">
