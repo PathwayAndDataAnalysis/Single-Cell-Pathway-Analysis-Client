@@ -57,7 +57,7 @@ export function ScatterPlotNew(props) {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            beginAtZero: false,
+            beginAtZero: true,
         },
         plugins: {
             zoom: {
@@ -101,9 +101,9 @@ export function ScatterPlotNew(props) {
     const data = {
         datasets: [
             {
-                label: 'A dataset',
+                label: 'Dataset1',
                 data: points,
-                backgroundColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgb(255,28,71)',
             },
         ],
     };

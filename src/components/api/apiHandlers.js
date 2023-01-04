@@ -35,6 +35,10 @@ export function runAnalysisHandler(analysisParams) {
     return axiosClient.post(`analysis/run/`, analysisParams);
 }
 
+export function updateAnalysisHandler(analysisParams) {
+    return axiosClient.post(`analysis/update/`, analysisParams);
+}
+
 export function getAnalysisCoordinatesHandler(analysisName) {
     return axiosClient.post(`analysis/get_coordinates/`, {analysisName: analysisName});
 }

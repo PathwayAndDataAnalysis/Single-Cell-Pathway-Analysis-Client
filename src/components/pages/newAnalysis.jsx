@@ -2,7 +2,7 @@ import NavBar from "../navBar";
 import {InputLayout} from "../other/inputLayout";
 import {ActionButton} from "../buttons/actionButton";
 import {DropDownLayout} from "../other/dropDownLayout";
-import {getAllFilesHandler, runAnalysisHandler} from "../api/apiHandlers";
+import {getAllFilesHandler, runAnalysisHandler, updateAnalysisHandler} from "../api/apiHandlers";
 import {useEffect, useState} from "react";
 import {useLocation} from "react-router-dom";
 
@@ -17,6 +17,15 @@ export function NewAnalysis(props) {
 
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [newAnalysisName, setNewAnalysisName] = useState("");
+
+    const [oldAnalysisName, setOldAnalysisName] = useState("");
+
+    const [useFiltering, setUseFiltering] = useState(true);
+    const [minNumOfCells, setMinNumOfCells] = useState();
+    const [minNumOfGenes, setMinNumOfGenes] = useState();
+    const [qcFilterPerc, setQCFilterPerc] = useState();
+    const [normalizationScale, setNormalizationScale] = useState();
+
     const [selectedDataMatrixFile, setSelectedDataMatrixFile] = useState("");
     const [selectedMetaDataFile, setSelectedMetaDataFile] = useState("");
     const [usePCA, setUsePCA] = useState(true);
@@ -37,8 +46,19 @@ export function NewAnalysis(props) {
             console.log("State exists");
             console.log(location.state);
             setNewAnalysisName(location.state.analysisName);
+            setOldAnalysisName(location.state.analysisName);
+
+            setUseFiltering(location.state.useFiltering);
+            setNormalizationScale(location.state.normalizationScale);
+
             setSelectedDataMatrixFile(location.state.dataMatrixFile);
             setSelectedMetaDataFile(location.state.metaDataFile);
+
+            if (location.state.useFiltering) {
+                setMinNumOfCells(location.state.minNumOfCells);
+                setMinNumOfGenes(location.state.minNumOfGenes);
+                setQCFilterPerc(location.state.qcFilterPerc);
+            }
 
             if (location.state.usePCA) {
                 setUsePCA(true);
@@ -87,6 +107,13 @@ export function NewAnalysis(props) {
     function onRunAnalysisClick() {
         let analysisParams = {
             "analysisName": newAnalysisName,
+
+            "useFiltering": useFiltering,
+            "minNumOfCells": minNumOfCells,
+            "minNumOfGenes": minNumOfGenes,
+            "qcFilterPerc": qcFilterPerc,
+            "normalizationScale": normalizationScale,
+
             "dataMatrixFile": selectedDataMatrixFile,
             "metaDataFile": selectedMetaDataFile,
             "usePCA": usePCA,
@@ -110,7 +137,36 @@ export function NewAnalysis(props) {
     }
 
     function onUpdateAnalysisClick() {
+        let analysisParams = {
+            "analysisName": newAnalysisName,
+            "oldAnalysisName": oldAnalysisName,
 
+            "useFiltering": useFiltering,
+            "minNumOfCells": minNumOfCells,
+            "minNumOfGenes": minNumOfGenes,
+            "qcFilterPerc": qcFilterPerc,
+            "normalizationScale": normalizationScale,
+
+            "dataMatrixFile": selectedDataMatrixFile,
+            "metaDataFile": selectedMetaDataFile,
+            "usePCA": usePCA,
+            "pcaCount": pcaCount,
+            "pcaFile": selectedPCAFile,
+            "useUMAP": useUMAP,
+            "umapFile": selectedUMAPFile,
+            "n_neighbors": n_neighbors,
+            "min_dist": min_dist,
+            "metric": metric,
+        }
+
+        updateAnalysisHandler(analysisParams)
+            .then(res => {
+                console.log(res);
+                window.location.href = "/home";
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     return (<div>
@@ -131,6 +187,71 @@ export function NewAnalysis(props) {
                                  }}
 
                     />
+                </div>
+
+
+                <h1 className='text-left text-xl mt-4 mb-2'>Data Filtering:</h1>
+                <div
+                    className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
+                    <DropDownLayout label="Filter Missing values?"
+                                    id="filter_missing_values_or_not"
+                                    options={["Yes", "No"]}
+                                    value={useFiltering ? "Yes" : "No"}
+                                    onChange={(event) => {
+                                        setUseFiltering(event.target.value === "Yes");
+                                    }}
+                    />
+                    {
+                        useFiltering ?
+                            <>
+                                <InputLayout
+                                    inputFor="Min # of cells:"
+                                    inputId="min_number_of_cells"
+                                    placeholder="2000"
+                                    value={minNumOfCells}
+                                    onChange={(event) => {
+                                        setMinNumOfCells(event.target.value);
+                                    }
+                                    }
+                                />
+
+                                <InputLayout
+                                    inputFor="Min # of genes:"
+                                    inputId="min_number_of_genes"
+                                    placeholder="2000"
+                                    value={minNumOfGenes}
+                                    onChange={(event) => {
+                                        setMinNumOfGenes(event.target.value);
+                                    }
+                                    }
+                                />
+
+                                <InputLayout
+                                    inputFor="QC filter %"
+                                    inputId="qc_filter"
+                                    placeholder="10%"
+                                    value={qcFilterPerc}
+                                    onChange={(event) => {
+                                        setQCFilterPerc(event.target.value);
+                                    }
+                                    }
+                                />
+                            </>
+                            :
+                            null
+                    }
+
+                    <InputLayout
+                        inputFor="Normalization Scale:"
+                        inputId="normalization_scale"
+                        placeholder="25000"
+                        value={normalizationScale}
+                        onChange={(event) => {
+                            setNormalizationScale(event.target.value);
+                        }
+                        }
+                    />
+
                 </div>
 
 
