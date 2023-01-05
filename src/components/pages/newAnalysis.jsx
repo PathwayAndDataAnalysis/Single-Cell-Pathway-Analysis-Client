@@ -5,6 +5,8 @@ import {DropDownLayout} from "../other/dropDownLayout";
 import {getAllFilesHandler, runAnalysisHandler, updateAnalysisHandler} from "../api/apiHandlers";
 import {useEffect, useState} from "react";
 import {useLocation} from "react-router-dom";
+import {FilterInputLayout} from "../other/filterInputLayout";
+import {CheckBoxLayout} from "../other/checkBoxLayout";
 
 
 export function NewAnalysis(props) {
@@ -16,18 +18,31 @@ export function NewAnalysis(props) {
 
 
     const [uploadedFiles, setUploadedFiles] = useState([]);
+
     const [newAnalysisName, setNewAnalysisName] = useState("");
-
     const [oldAnalysisName, setOldAnalysisName] = useState("");
+    const [selectedOrganism, setSelectedOrganism] = useState("");
+    const [selectedMetaDataFile, setSelectedMetaDataFile] = useState("");
 
-    const [useFiltering, setUseFiltering] = useState(true);
+    const [filterCells, setFilterCells] = useState(true);
     const [minNumOfCells, setMinNumOfCells] = useState();
+
+    const [filterGenes, setFilterGenes] = useState(true);
     const [minNumOfGenes, setMinNumOfGenes] = useState();
+
+    const [filterQC, setFilterQC] = useState(true);
     const [qcFilterPerc, setQCFilterPerc] = useState();
+
+    const [normalizeData, setNormalizedData] = useState(true);
     const [normalizationScale, setNormalizationScale] = useState();
 
+    const [useLogTransform, setUseLogTransform] = useState(true);
     const [selectedDataMatrixFile, setSelectedDataMatrixFile] = useState("");
-    const [selectedMetaDataFile, setSelectedMetaDataFile] = useState("");
+
+
+    const [useFiltering, setUseFiltering] = useState(true);
+
+
     const [usePCA, setUsePCA] = useState(true);
     const [pcaCount, setPcaCount] = useState('');
     const [selectedPCAFile, setSelectedPCAFile] = useState('');
@@ -105,6 +120,10 @@ export function NewAnalysis(props) {
     }
 
     function onRunAnalysisClick() {
+
+        console.log("useLogTransform", useLogTransform);
+        console.log("selectedOrganism", selectedOrganism);
+
         let analysisParams = {
             "analysisName": newAnalysisName,
 
@@ -126,14 +145,14 @@ export function NewAnalysis(props) {
             "metric": metric,
         }
 
-        runAnalysisHandler(analysisParams)
-            .then(res => {
-                console.log(res);
-                window.location.href = "/home";
-            })
-            .catch(err => {
-                console.log(err);
-            });
+        // runAnalysisHandler(analysisParams)
+        //     .then(res => {
+        //         console.log(res);
+        //         window.location.href = "/home";
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //     });
     }
 
     function onUpdateAnalysisClick() {
@@ -175,7 +194,6 @@ export function NewAnalysis(props) {
             </div>
 
             <div className='container mx-auto'>
-                <h1 className='text-left text-xl mt-4 mb-2'>Setup Analysis:</h1>
                 <div
                     className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
                     <InputLayout inputFor="Name of the analysis:"
@@ -187,71 +205,6 @@ export function NewAnalysis(props) {
                                  }}
 
                     />
-                </div>
-
-
-                <h1 className='text-left text-xl mt-4 mb-2'>Data Filtering:</h1>
-                <div
-                    className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
-                    <DropDownLayout label="Filter Missing values?"
-                                    id="filter_missing_values_or_not"
-                                    options={["Yes", "No"]}
-                                    value={useFiltering ? "Yes" : "No"}
-                                    onChange={(event) => {
-                                        setUseFiltering(event.target.value === "Yes");
-                                    }}
-                    />
-                    {
-                        useFiltering ?
-                            <>
-                                <InputLayout
-                                    inputFor="Min # of cells:"
-                                    inputId="min_number_of_cells"
-                                    placeholder="2000"
-                                    value={minNumOfCells}
-                                    onChange={(event) => {
-                                        setMinNumOfCells(event.target.value);
-                                    }
-                                    }
-                                />
-
-                                <InputLayout
-                                    inputFor="Min # of genes:"
-                                    inputId="min_number_of_genes"
-                                    placeholder="2000"
-                                    value={minNumOfGenes}
-                                    onChange={(event) => {
-                                        setMinNumOfGenes(event.target.value);
-                                    }
-                                    }
-                                />
-
-                                <InputLayout
-                                    inputFor="QC filter %"
-                                    inputId="qc_filter"
-                                    placeholder="10%"
-                                    value={qcFilterPerc}
-                                    onChange={(event) => {
-                                        setQCFilterPerc(event.target.value);
-                                    }
-                                    }
-                                />
-                            </>
-                            :
-                            null
-                    }
-
-                    <InputLayout
-                        inputFor="Normalization Scale:"
-                        inputId="normalization_scale"
-                        placeholder="25000"
-                        value={normalizationScale}
-                        onChange={(event) => {
-                            setNormalizationScale(event.target.value);
-                        }
-                        }
-                    />
-
                 </div>
 
 
@@ -267,6 +220,16 @@ export function NewAnalysis(props) {
                                     }}
                     />
 
+                    <DropDownLayout label="Select organism:"
+                                    id="organism_type"
+                                    options={["Select Organism Type of Data", "Mouse", "Human"]}
+                                    value={selectedOrganism}
+                                    onChange={(event) => {
+                                        setSelectedOrganism(event.target.value);
+                                    }}
+                    />
+
+
                     <DropDownLayout label="Metadata:"
                                     id="meta_data"
                                     options={["Select Meta Data File", ...uploadedFiles]}
@@ -275,6 +238,120 @@ export function NewAnalysis(props) {
                                         setSelectedMetaDataFile(event.target.value);
                                     }}
                     />
+                </div>
+
+
+                <h1 className='text-left text-xl mt-4 mb-2'>Data Filtering:</h1>
+                <div
+                    className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
+
+                    <FilterInputLayout label_before="Filter cells expressed in less than"
+                                       label_after="of cells"
+                                       id="label_for_cells"
+                                       booleanValue={filterCells}
+                                       value={minNumOfCells}
+                                       onChange={(event) => {
+                                           setMinNumOfCells(event.target.value);
+                                       }}
+                    />
+
+                    <FilterInputLayout label_before="Filter genes expressed in less than"
+                                       label_after="of genes"
+                                       id="label_for_genes"
+                                       booleanValue={filterGenes}
+                                       value={minNumOfGenes}
+                                       onChange={(event) => {
+                                           setMinNumOfGenes(event.target.value);
+                                       }}
+                    />
+
+                    <FilterInputLayout label_before="Apply QC filter with threshold"
+                                       label_after="% of Mitochondrial(MT) Genes"
+                                       id="label_for_genes"
+                                       booleanValue={filterQC}
+                                       value={qcFilterPerc}
+                                       onChange={(event) => {
+                                           setQCFilterPerc(event.target.value);
+                                       }}
+                    />
+
+                    <FilterInputLayout label_before="Normalize data to"
+                                       label_after="scale"
+                                       id="label_for_genes"
+                                       booleanValue={normalizeData}
+                                       value={normalizationScale}
+                                       onChange={(event) => {
+                                           setNormalizationScale(event.target.value);
+                                       }}
+                    />
+
+                    <CheckBoxLayout label="Apply Log transformation"
+                                    id="log_transformation"
+                                    onChange={(event) => {
+                                        setUseLogTransform(event.target.checked);
+                                    }}
+                    />
+
+
+                    {/*    <DropDownLayout label="Filter Missing values?"*/}
+                    {/*                    id="filter_missing_values_or_not"*/}
+                    {/*                    options={["Yes", "No"]}*/}
+                    {/*                    value={useFiltering ? "Yes" : "No"}*/}
+                    {/*                    onChange={(event) => {*/}
+                    {/*                        setUseFiltering(event.target.value === "Yes");*/}
+                    {/*                    }}*/}
+                    {/*    />*/}
+                    {/*    {*/}
+                    {/*        useFiltering ?*/}
+                    {/*            <>*/}
+                    {/*                <InputLayout*/}
+                    {/*                    inputFor="Min # of cells:"*/}
+                    {/*                    inputId="min_number_of_cells"*/}
+                    {/*                    placeholder="2000"*/}
+                    {/*                    value={minNumOfCells}*/}
+                    {/*                    onChange={(event) => {*/}
+                    {/*                        setMinNumOfCells(event.target.value);*/}
+                    {/*                    }*/}
+                    {/*                    }*/}
+                    {/*                />*/}
+
+                    {/*                <InputLayout*/}
+                    {/*                    inputFor="Min # of genes:"*/}
+                    {/*                    inputId="min_number_of_genes"*/}
+                    {/*                    placeholder="2000"*/}
+                    {/*                    value={minNumOfGenes}*/}
+                    {/*                    onChange={(event) => {*/}
+                    {/*                        setMinNumOfGenes(event.target.value);*/}
+                    {/*                    }*/}
+                    {/*                    }*/}
+                    {/*                />*/}
+
+                    {/*                <InputLayout*/}
+                    {/*                    inputFor="QC filter %"*/}
+                    {/*                    inputId="qc_filter"*/}
+                    {/*                    placeholder="10%"*/}
+                    {/*                    value={qcFilterPerc}*/}
+                    {/*                    onChange={(event) => {*/}
+                    {/*                        setQCFilterPerc(event.target.value);*/}
+                    {/*                    }*/}
+                    {/*                    }*/}
+                    {/*                />*/}
+                    {/*            </>*/}
+                    {/*            :*/}
+                    {/*            null*/}
+                    {/*    }*/}
+
+                    {/*    <InputLayout*/}
+                    {/*        inputFor="Normalization Scale:"*/}
+                    {/*        inputId="normalization_scale"*/}
+                    {/*        placeholder="25000"*/}
+                    {/*        value={normalizationScale}*/}
+                    {/*        onChange={(event) => {*/}
+                    {/*            setNormalizationScale(event.target.value);*/}
+                    {/*        }*/}
+                    {/*        }*/}
+                    {/*    />*/}
+
                 </div>
 
 
