@@ -7,7 +7,7 @@ export function CheckBoxLayout(props) {
             <Checkbox
                 id={props.id}
                 className=""
-                defaultChecked
+                checked={props.checkBoxValue}
                 onChange={props.onChange}
             />
             {props.label}
