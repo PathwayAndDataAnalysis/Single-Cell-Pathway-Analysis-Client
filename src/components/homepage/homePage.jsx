@@ -25,7 +25,6 @@ export function HomePage(props) {
     const [uploadPercentage, setUploadPercentage] = useState(0);
     const [allAnalysis, setAllAnalysis] = useState([]);
 
-    const [currentStepStatus, setCurrentStepStatus] = useState("Not Started");
 
     // Navigation
     const navigate = useNavigate()
@@ -49,8 +48,7 @@ export function HomePage(props) {
                 let temp = [];
                 for (let i = 0; i < res.data['analysis'].length; i++) {
                     temp.push(res.data['analysis'][i]);
-                    console.log(res.data['analysis'][i].status);
-                    setCurrentStepStatus(res.data['analysis'][i].status ? "Finished" : "Not Finished");
+                    console.log(i + ":  " + res.data['analysis'][i]);
                 }
                 setAllAnalysis(temp);
 
@@ -168,7 +166,11 @@ export function HomePage(props) {
                                         }}
                                         onDeleteClick={deleteAnalysis.bind(this, file['analysisName'])}
 
-                                        currentStep={currentStepStatus}
+                                        currentStep={
+                                        "Filtering Done: " + file['filteringStatus'] + ",   " +
+                                        "PCA Done: " + file['pcaStatus'] + ",   " +
+                                        "UMAP Done: " + file['umapStatus'] + ",   " +
+                                        "Analysis Ready: " + file['allStatus']}
                                     />
                                 )
                             })

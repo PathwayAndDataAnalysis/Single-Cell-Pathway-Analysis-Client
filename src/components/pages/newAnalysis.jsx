@@ -268,7 +268,7 @@ export function NewAnalysis(props) {
                     className='my-4 grid-cols-1 block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
 
                     <FilterInputLayout label_before="Filter cells expressed in less than"
-                                       label_after="of cells"
+                                       label_after="of genes"
                                        id="label_for_cells"
                                        checkBoxValue={isFilterCells}
                                        value={minNumOfCells}
@@ -283,7 +283,7 @@ export function NewAnalysis(props) {
                     />
 
                     <FilterInputLayout label_before="Filter genes expressed in less than"
-                                       label_after="of genes"
+                                       label_after="of cells"
                                        id="label_for_genes"
                                        checkBoxValue={isFilterGenes}
                                        value={minNumOfGenes}

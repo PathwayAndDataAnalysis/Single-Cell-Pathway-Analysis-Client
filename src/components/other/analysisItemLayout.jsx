@@ -32,8 +32,9 @@ export function AnalysisItemLayout(props) {
                 </div>
             </div>
 
-            <h2>{props.currentStep}</h2>
-
+            <p className='font-mono text-sm font-normal text-black-200'>
+                {props.currentStep}
+            </p>
 
         </>
     )
