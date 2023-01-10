@@ -2,25 +2,27 @@ import NavBar from "../navBar";
 import {InputLayout} from "../other/inputLayout";
 import {ActionButton} from "../buttons/actionButton";
 import {DropDownLayout} from "../other/dropDownLayout";
-import {getAllFilesHandler, runAnalysisHandler, updateAnalysisHandler} from "../api/apiHandlers";
+import {getAllAnalysisHandler, getAllFilesHandler, runAnalysisHandler, updateAnalysisHandler} from "../api/apiHandlers";
 import {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
+import {json, useLocation} from "react-router-dom";
 import {FilterInputLayout} from "../other/filterInputLayout";
 import {CheckBoxLayout} from "../other/checkBoxLayout";
+import {Alert} from "@material-tailwind/react";
 
 
 export function NewAnalysis(props) {
 
+    const [analysisList, setAnalysisList] = useState([]);
+
     const dimReductionTypes = ["Use PCA", "Use Existing PCA File"];
     const umapTypesArray = ["Use UMAP", "Use Existing UMAP File"];
 
-    const defaultMinCellFilter = 5000
-    const defaultMinGeneFilter = 4000
+    const defaultMinCellFilter = 200
+    const defaultMinGeneFilter = 20
     const defaultQCFilter = 10
     const defaultNormalizationScale = 10000
 
     const location = useLocation();
-
 
     const [uploadedFiles, setUploadedFiles] = useState([]);
 
@@ -41,18 +43,18 @@ export function NewAnalysis(props) {
 
     const [selectedDataMatrixFile, setSelectedDataMatrixFile] = useState("");
 
-
     const [usePCA, setUsePCA] = useState(true);
     const [pcaCount, setPcaCount] = useState('');
     const [selectedPCAFile, setSelectedPCAFile] = useState('');
     const [useUMAP, setUseUMAP] = useState(true);
     const [selectedUMAPFile, setSelectedUMAPFile] = useState('');
-    const [n_neighbors, setN_neighbors] = useState('');
-    const [min_dist, setMin_dist] = useState('');
-    const [metric, setMetric] = useState('euclidean');
+    const [n_neighbors, setN_neighbors] = useState('15');
+    const [min_dist, setMin_dist] = useState('0.1');
+    const [metric, setMetric] = useState('cosine');
 
     useEffect(() => {
-        getAllFiles();
+        getAllFiles()
+        getAllAnalysis()
 
         if (location.state === null) {
             console.log("No state");
@@ -67,13 +69,9 @@ export function NewAnalysis(props) {
             setSelectedMetaDataFile(location.state.metaDataFile);
 
             setIsFilterCells(location.state.isFilterCells);
-            // setMinNumOfCells(location.state.minNumOfCells);
             setIsFilterGenes(location.state.isFilterGenes);
-            // setMinNumOfGenes(location.state.minNumOfGenes);
             setIsQCFilter(location.state.isQCFilter);
-            // setQcFilterPercent(location.state.qcFilterPercent);
             setIsNormalizeData(location.state.isNormalizeData);
-            // setNormalizationScale(location.state.normalizationScale);
             setIsUseLogTransform(location.state.isUseLogTransform);
 
 
@@ -122,6 +120,18 @@ export function NewAnalysis(props) {
             });
     }
 
+    function getAllAnalysis() {
+        getAllAnalysisHandler()
+            .then(res => {
+                for (let i = 0; i < res.data['analysis'].length; i++) {
+                    analysisList.push(res.data['analysis'][i].analysisName);
+                }
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
     function onUMAPParametersChange(event) {
         if (event.target.id === "n_neighbors")
             setN_neighbors(event.target.value);
@@ -132,6 +142,10 @@ export function NewAnalysis(props) {
     }
 
     function onRunAnalysisClick() {
+        if (analysisList.includes(newAnalysisName)) {
+            alert("Analysis name already exists. Please choose another name.");
+            return;
+        }
 
         let analysisParams = {
             "analysisName": newAnalysisName,
@@ -411,7 +425,7 @@ export function NewAnalysis(props) {
                                 <DropDownLayout
                                     label="metric:"
                                     id="metric"
-                                    options={["euclidean", "no euclidean"]}
+                                    options={["cosine", "euclidean"]}
                                     value={metric}
                                     onChange={onUMAPParametersChange}
                                 />
@@ -445,9 +459,15 @@ export function NewAnalysis(props) {
                             />
                     }
 
-                    <ActionButton type="button" text='Cancel' onClick={() => {
-                        window.location = '/home'
-                    }}/>
+                    <button
+                        type={props.type}
+                        className='bg-red-500 hover:bg-red-700 text-white text-xs font-medium py-1 px-3 rounded-md h-8 ml-6 mt-6'
+                        onClick={() => {
+                            window.location = '/home'
+                        }}
+                    >
+                        Cancel
+                    </button>
                 </div>
 
             </div>

@@ -21,6 +21,7 @@ export function HomePage(props) {
     }, []);
 
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [isFileSelected, setIsFileSelected] = useState(false);
     const [allFiles, setAllFiles] = useState([]);
     const [uploadPercentage, setUploadPercentage] = useState(0);
     const [allAnalysis, setAllAnalysis] = useState([]);
@@ -48,7 +49,6 @@ export function HomePage(props) {
                 let temp = [];
                 for (let i = 0; i < res.data['analysis'].length; i++) {
                     temp.push(res.data['analysis'][i]);
-                    console.log(i + ":  " + res.data['analysis'][i]);
                 }
                 setAllAnalysis(temp);
 
@@ -80,6 +80,7 @@ export function HomePage(props) {
 
     function onFileChange(event) {
         setSelectedFiles(event.target.files[0]);
+        setIsFileSelected(true);
     }
 
     function onFileUpload() {
@@ -119,6 +120,7 @@ export function HomePage(props) {
                         onUploadClick={onFileUpload}
                         onFileChange={onFileChange}
                         uploadPercentage={uploadPercentage}
+                        isFileSelected={isFileSelected}
                     />
 
                     {// check if allFiles is empty
@@ -134,11 +136,12 @@ export function HomePage(props) {
                                                         uploadDate={file['uploadDate']}
                                                         onDeleteClick={deleteFile.bind(this, file['fileName'])}
                                 />)
-                            })}
+                            })
+                    }
                 </div>
 
 
-                <h1 className='text-left text-xl mt-6 mb-2'>Analysis:</h1>
+                <h1  className='text-left text-xl mt-6 mb-2'>Analysis:</h1>
 
                 <div
                     className='my-4 grid-cols-1 divide-y block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
@@ -151,33 +154,36 @@ export function HomePage(props) {
                                 return (
                                     <AnalysisItemLayout
                                         keyValue={index}
+
                                         analysisName={file['analysisName']}
+
                                         onViewClick={() => {
-                                            navigate(`/view/analysis/${file['analysisName']}`,
-                                                {
+                                            navigate(`/view/analysis/${file['analysisName']}`, {
                                                     state: file['analysisName']
                                                 }
                                             )
                                         }}
+
                                         onEditClick={() => {
                                             navigate('/analysis/' + file['analysisName'], {
                                                 state: file['analysisParams']
                                             });
                                         }}
+
                                         onDeleteClick={deleteAnalysis.bind(this, file['analysisName'])}
 
-                                        currentStep={
-                                        "Filtering Done: " + file['filteringStatus'] + ",   " +
-                                        "PCA Done: " + file['pcaStatus'] + ",   " +
-                                        "UMAP Done: " + file['umapStatus'] + ",   " +
-                                        "Analysis Ready: " + file['allStatus']}
+                                        isFilteringDone={file['filteringStatus']}
+                                        isPCADone={file['pcaStatus']}
+                                        isUMAPDone={file['umapStatus']}
+                                        isAnalysisReady={file['allStatus']}
+
                                     />
                                 )
                             })
                     }
 
-                    <div className='flex flex-row justify-end mt-6'>
-                        <ActionButton text='New Analysis'
+                    <div className='flex flex-row justify-end'>
+                        <ActionButton text='Start New Analysis'
                                       type='button'
                                       onClick={() => {
                                           window.location = '/new-analysis'
