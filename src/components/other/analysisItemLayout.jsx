@@ -71,13 +71,13 @@ export function AnalysisItemLayout(props) {
 
 
                 {props.isAnalysisReady ? <button type='button'
-                                                 className='bg-green-500 hover:bg-green-700 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'
+                                                 className='bg-green-500 hover:bg-green-700 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'
                                                  onClick={props.onViewClick}>
                         View
                     </button>
                     :
                     <button type='button'
-                            className='bg-gray-500 hover:bg-gray-500 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'>
+                            className='bg-gray-500 hover:bg-gray-500 text-white text-xs font-medium py-1 px-3 h-8 rounded-md ml-6'>
                         View
                     </button>
                 }
@@ -85,13 +85,13 @@ export function AnalysisItemLayout(props) {
                 {
                     props.isAnalysisReady ?
                         <button type='button'
-                                className='bg-blue-500 hover:bg-blue-700 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'
+                                className='bg-blue-500 hover:bg-blue-700 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'
                                 onClick={props.onEditClick}>
                             Edit
                         </button>
                         :
                         <button type='button'
-                                className='bg-gray-500 hover:bg-gray-500 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'>
+                                className='bg-gray-500 hover:bg-gray-500 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'>
                             Edit
                         </button>
                 }
@@ -99,13 +99,13 @@ export function AnalysisItemLayout(props) {
                 {
                     props.isAnalysisReady ?
                         <button type='button'
-                                className='bg-red-500 hover:bg-red-700 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'
+                                className='bg-red-500 hover:bg-red-700 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'
                                 onClick={props.onDeleteClick}>
                             Delete
                         </button>
                         :
                         <button type='button'
-                                className='bg-gray-500 hover:bg-gray-500 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'>
+                                className='bg-gray-500 hover:bg-gray-500 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'>
                             Delete
                         </button>
                 }

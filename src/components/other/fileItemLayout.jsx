@@ -19,7 +19,7 @@ export function FileItemLayout(props) {
                     </div>
 
                     <button type='button'
-                            className='bg-red-500 hover:bg-red-700 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'
+                            className='bg-red-500 hover:bg-red-700 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'
                             onClick={props.onDeleteClick}
                     >
                         Delete
