@@ -111,7 +111,7 @@ export function HomePage(props) {
             </div>
 
             <div className='container mx-auto'>
-                <h1 className='text-left text-xl mt-4 mb-2'>Files:</h1>
+                <h1 className='text-left text-l mt-4 mb-2 font-medium'>Files:</h1>
 
                 <div
                     className='my-4 grid-cols-1 divide-y block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>
@@ -141,7 +141,7 @@ export function HomePage(props) {
                 </div>
 
 
-                <h1  className='text-left text-xl mt-6 mb-2'>Analysis:</h1>
+                <h1  className='text-left text-l font-medium mt-6 mb-2'>Analysis:</h1>
 
                 <div
                     className='my-4 grid-cols-1 divide-y block p-6 max-w-none bg-white rounded-lg border border-gray-200 shadow-md'>

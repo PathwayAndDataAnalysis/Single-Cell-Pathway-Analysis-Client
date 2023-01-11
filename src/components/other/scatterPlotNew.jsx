@@ -57,7 +57,7 @@ export function ScatterPlotNew(props) {
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-            beginAtZero: true,
+            beginAtZero: false,
         },
         plugins: {
             zoom: {

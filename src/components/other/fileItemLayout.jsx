@@ -5,7 +5,7 @@ export function FileItemLayout(props) {
             <div key={props.keyValue} className="flex justify-between items-left hover:bg-gray-300 rounded-md px-6 py-2">
 
                 <div className="w-3/5m flex items-left justify-left justify-center items-center">
-                    <p className="justify-left text-md">{props.fileName}</p>
+                    <p className="justify-left text-sm">{props.fileName}</p>
                 </div>
 
                 <div className="w-2/5 flex justify-between justify-center items-center">

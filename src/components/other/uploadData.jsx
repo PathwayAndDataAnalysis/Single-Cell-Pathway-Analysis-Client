@@ -1,7 +1,7 @@
 export function UploadData(props) {
     return (
         <div className='panel flex mb-8'>
-            <h1 className='text-l pt-1'>Upload Files</h1>
+            <h1 className='text-sm font-medium pt-2'>Upload Files</h1>
 
             <div className='justify-left items-left'>
                 <input type='file'
@@ -13,7 +13,7 @@ export function UploadData(props) {
                 {
                     props.isFileSelected ?
                         <button type='button'
-                                className='bg-green-400 hover:bg-green-700 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'
+                                className='bg-green-400 hover:bg-green-700 text-white text-xs py-1 px-3 h-8 font-medium rounded-md ml-6 text-medium'
                                 onClick={props.onUploadClick}
                         >
                             Upload File
@@ -21,7 +21,7 @@ export function UploadData(props) {
                         :
                         <button type='button'
                                 disabled={true}
-                                className='bg-gray-500 hover:bg-gray-500 text-white text-xs py-1 px-3 h-8 rounded-md ml-6'
+                                className='bg-gray-500 hover:bg-gray-500 text-white text-xs py-1 font-medium px-3 h-8 rounded-md ml-6'
                         >
                             Upload File
                         </button>
