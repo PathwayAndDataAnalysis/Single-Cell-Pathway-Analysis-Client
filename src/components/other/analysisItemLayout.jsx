@@ -96,19 +96,13 @@ export function AnalysisItemLayout(props) {
                         </button>
                 }
 
-                {
-                    props.isAnalysisReady ?
-                        <button type='button'
-                                className='bg-red-500 hover:bg-red-700 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'
-                                onClick={props.onDeleteClick}>
-                            Delete
-                        </button>
-                        :
-                        <button type='button'
-                                className='bg-gray-500 hover:bg-gray-500 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'>
-                            Delete
-                        </button>
-                }
+
+                <button type='button'
+                        className='bg-red-500 hover:bg-red-700 text-white font-medium text-xs py-1 px-3 h-8 rounded-md ml-6'
+                        onClick={props.onDeleteClick}>
+                    Delete
+                </button>
+
 
             </div>
         </div>

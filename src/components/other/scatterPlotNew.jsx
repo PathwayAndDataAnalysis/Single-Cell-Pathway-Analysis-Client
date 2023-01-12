@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useMemo, useRef} from 'react';
-import {getElementsAtEvent, Scatter} from 'react-chartjs-2';
+import React, {useEffect, useRef, useState} from 'react';
+import {Scatter} from 'react-chartjs-2';
 import {Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Tooltip} from "chart.js";
 import zoomPlugin from 'chartjs-plugin-zoom';
 import {getAnalysisCoordinatesHandler} from "../api/apiHandlers";
@@ -11,63 +11,62 @@ export function ScatterPlotNew(props) {
 
     const analysisName = props.analysisName;
 
-    const points = [];
+    const [dataSets, setDataSets] = useState([]);
 
-    const getAnalysisCoordinates = useCallback(() => {
-
+    const getAnalysisCoordinates = () => {
         function setCoordinates(coordinates) {
+            let data = []
             for (let i = 0; i < coordinates.length; i++) {
-                const p = {
-                    x: Number(coordinates[i]['UMAP1']),
-                    y: Number(coordinates[i]['UMAP2'])
-                }
 
-                if (points.includes(p) === false)
-                    points.push(p);
+                if (data.some(e => e.label === "Cluster: " + coordinates[i]['ClusterID'])) {
+                    data.find(e => e.label === "Cluster: " + coordinates[i]['ClusterID']).data.push({
+                        cell: coordinates[i]['Cell'],
+                        x: coordinates[i]['UMAP1'],
+                        y: coordinates[i]['UMAP2']
+                    })
+                } else
+                    data.push({
+                        label: "Cluster: " + coordinates[i]['ClusterID'],
+                        data: [{
+                            cell: coordinates[i]['Cell'],
+                            x: coordinates[i]['UMAP1'],
+                            y: coordinates[i]['UMAP2']
+                        }],
+                        backgroundColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
+                        // borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
+                    })
             }
+            console.log(data)
+            setDataSets(data);
         }
+
 
         getAnalysisCoordinatesHandler(analysisName)
             .then(res => {
-                console.log(res.data.data);
+                console.log("res.data", res.data);
                 setCoordinates(res.data.data);
             })
             .catch(err => {
                 console.log(err);
             });
-    }, [analysisName, points]);
-
+    };
 
     useEffect(() => {
         getAnalysisCoordinates();
-    }, [getAnalysisCoordinates]);
+    }, [analysisName]);
 
 
     const options = {
-        dragData: true,
-        onDragStart: function (e) {
-            // console.log(e)
-        },
-        onDrag: function (e, datasetIndex, index, value) {
-            // console.log(datasetIndex, index, value)
-        },
-        onDragEnd: function (e, datasetIndex, index, value) {
-            // console.log(datasetIndex, index, value)
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            beginAtZero: false,
-        },
+        maintainAspectRatio: true,
+        scales: {},
+
         plugins: {
+            responsive: true,
             zoom: {
                 pan: {
                     enabled: true,
                     mode: function () {
-                        // if (eventOutsideDataPoint) {
                         return 'xy';
-                        // }
-                        // return ''
                     }
                 },
                 zoom: {
@@ -82,30 +81,20 @@ export function ScatterPlotNew(props) {
             display: false
         },
 
-        interaction: {mode: 'point'},
         events: ['click'],
         onClick: function (e, element) {
-
-            console.log(e);
-            console.log(element);
-
+            // console.log(e);
+            // console.log(element);
             if (element.length > 0) {
                 const index = element[0]._index;
-                console.log(index);
-                console.log(points[index]);
+                // console.log(index);
+                // console.log(points[index]);
             }
-
         }
     };
 
     const data = {
-        datasets: [
-            {
-                label: 'Dataset1',
-                data: points,
-                backgroundColor: 'rgb(255,28,71)',
-            },
-        ],
+        datasets: dataSets
     };
 
     return (
