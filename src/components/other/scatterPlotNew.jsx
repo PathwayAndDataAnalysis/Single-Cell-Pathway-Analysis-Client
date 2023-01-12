@@ -75,6 +75,16 @@ export function ScatterPlotNew(props) {
                     pinch: {enabled: true},
                     mode: 'xy',
                 }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return context.dataset.data[context.dataIndex].cell
+                            + " (" + context.dataset.data[context.dataIndex].x
+                            + ", " + context.dataset.data[context.dataIndex].y + ")";
+                    },
+
+                }
             }
         },
         gridLines: {
@@ -82,13 +92,22 @@ export function ScatterPlotNew(props) {
         },
 
         events: ['click'],
-        onClick: function (e, element) {
-            // console.log(e);
-            // console.log(element);
-            if (element.length > 0) {
-                const index = element[0]._index;
-                // console.log(index);
-                // console.log(points[index]);
+        onClick: (e, activeEls) => {
+
+            if (activeEls.length > 0) {
+                let datasetIndex = activeEls[0].datasetIndex;
+                let dataIndex = activeEls[0].index;
+                let datasetLabel = e.chart.data.datasets[datasetIndex].label;
+                let value = e.chart.data.datasets[datasetIndex].data[dataIndex];
+                let label = e.chart.data.labels[dataIndex];
+
+                // console.log("In click", datasetLabel, label, value);
+                console.log("Clicked", value)
+
+                // Change the point color when clicked
+                e.chart.data.datasets[datasetIndex].backgroundColor[dataIndex] = 'red';
+                e.chart.update();
+
             }
         }
     };
