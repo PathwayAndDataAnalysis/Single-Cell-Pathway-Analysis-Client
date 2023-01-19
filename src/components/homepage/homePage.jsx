@@ -176,6 +176,7 @@ export function HomePage(props) {
                                         isPCADone={file['pcaStatus']}
                                         isUMAPDone={file['umapStatus']}
                                         isAnalysisReady={file['allStatus']}
+                                        errorMessage={file['errorMessage']}
 
                                     />
                                 )

@@ -4,6 +4,7 @@ import {InputLayoutCompact} from "../other/inputLayoutCompact";
 import {ActionButton} from "../buttons/actionButton";
 import {useLocation} from "react-router-dom";
 import {ScatterPlotNew} from "../other/scatterPlotNew";
+import {ColorPaletteDropDown} from "../other/colorPaletteDropDown";
 
 export function ViewAnalysis(props) {
 
@@ -42,6 +43,10 @@ export function ViewAnalysis(props) {
                         />
                         <DropDownLayoutCompact label="Optimize distance"
                                                options={["Squared euclidean", "Mean square error"]}/>
+
+                        <ColorPaletteDropDown label="Select Color Palette"
+                                              options={["Color1", "Color2", "Color3"]}/>
+
 
                         <div className="">
                             <ActionButton text="Calculate trajectory"
