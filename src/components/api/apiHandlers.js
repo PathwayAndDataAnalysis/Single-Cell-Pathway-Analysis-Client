@@ -43,3 +43,14 @@ export function getAnalysisCoordinatesHandler(analysisName) {
     return axiosClient.post(`analysis/get_coordinates/`, {analysisName: analysisName});
 }
 
+export function getMetadataColumnsHandler(analysisName) {
+    return axiosClient.post(`analysis/get_metadata_columns/`, {analysisName: analysisName});
+}
+
+export function getDataWithMetaDataColumnsHandler(analysisName, column) {
+    return axiosClient.post(
+        `analysis/get_data_with_metadata_columns/`,
+        {analysisName: analysisName, columnName: column}
+    );
+}
+

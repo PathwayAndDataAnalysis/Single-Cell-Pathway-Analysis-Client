@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Scatter} from 'react-chartjs-2';
 import {Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Tooltip} from "chart.js";
 import zoomPlugin from 'chartjs-plugin-zoom';
-import {getAnalysisCoordinatesHandler} from "../api/apiHandlers";
+import {getAnalysisCoordinatesHandler, getMetadataColumnsHandler} from "../api/apiHandlers";
 
 export function ScatterPlotNew(props) {
     const chartRef = useRef();
@@ -36,10 +36,8 @@ export function ScatterPlotNew(props) {
                         // borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
                     })
             }
-            console.log(data)
             setDataSets(data);
         }
-
 
         getAnalysisCoordinatesHandler(analysisName)
             .then(res => {
@@ -51,9 +49,10 @@ export function ScatterPlotNew(props) {
             });
     };
 
+
     useEffect(() => {
         getAnalysisCoordinates();
-    }, [analysisName]);
+    }, [analysisName, props.isChanged]);
 
 
     const options = {

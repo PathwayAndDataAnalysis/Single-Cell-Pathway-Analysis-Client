@@ -10,9 +10,9 @@ export function DropDownLayoutCompact(props) {
                 >
                 {props.options.map((option) => {
                     if (option === props.value) return (
-                        <option key={option.value} value={option.value} selected>{option}</option>)
+                        <option key={option} value={option.value} selected>{option}</option>)
 
-                    return (<option key={option.value} value={option.value}>{option}</option>)
+                    return (<option key={option} value={option.value}>{option}</option>)
                 })}
             </select>
         </div>
