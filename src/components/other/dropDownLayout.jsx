@@ -1,7 +1,5 @@
-import {IconButton} from "@material-tailwind/react";
-
 export function DropDownLayout(props) {
-    return (<div className='flex flex-row justify-end m-4 items-center'>
+    return (<div key={props.value} className='flex flex-row justify-end m-4 items-center'>
         <label className='w-1/6 text-sm text-gray-600 pb-1 block'>
             {props.label}
         </label>

@@ -5,7 +5,7 @@ import "./App.css";
 import {HomePage} from "./components/homepage/homePage";
 import {NewAnalysis} from "./components/pages/newAnalysis";
 import {ForgetPassword} from "./components/forgetPassword";
-import {ViewAnalysis} from "./components/pages/viewAnalysis";
+import {ViewAnalysis} from "./components/pages/viewAnalysis/viewAnalysis";
 
 function App() {
     return (

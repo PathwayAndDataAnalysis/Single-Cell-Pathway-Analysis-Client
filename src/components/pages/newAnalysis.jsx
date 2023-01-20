@@ -4,10 +4,9 @@ import {ActionButton} from "../buttons/actionButton";
 import {DropDownLayout} from "../other/dropDownLayout";
 import {getAllAnalysisHandler, getAllFilesHandler, runAnalysisHandler, updateAnalysisHandler} from "../api/apiHandlers";
 import {useEffect, useState} from "react";
-import {json, useLocation} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import {FilterInputLayout} from "../other/filterInputLayout";
 import {CheckBoxLayout} from "../other/checkBoxLayout";
-import {Alert} from "@material-tailwind/react";
 
 
 export function NewAnalysis(props) {
