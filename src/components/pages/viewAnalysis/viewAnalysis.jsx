@@ -1,6 +1,6 @@
 import NavBar from "../../navBar";
 import {useLocation} from "react-router-dom";
-import {ScatterPlotNew} from "../../other/scatterPlotNew";
+import {ScatterPlot} from "./scatterPlot";
 import {useState} from "react";
 import {getDataWithMetaDataColumnsHandler} from "../../api/apiHandlers";
 import {PlotSidePanel} from "./plotSidePanel";
@@ -33,8 +33,8 @@ export function ViewAnalysis(props) {
         <div className='container mx-auto'>
             <div className="grid grid-cols-6 gap-2 my-4">
                 <div className="h-screen col-span-5 bg-gray-50 rounded-md">
-                    <ScatterPlotNew analysisName={state}
-                                    isChanged={clusterChanged}
+                    <ScatterPlot analysisName={state}
+                                 isChanged={clusterChanged}
                     />
 
                 </div>

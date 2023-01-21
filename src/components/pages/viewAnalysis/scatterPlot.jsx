@@ -2,12 +2,12 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Scatter} from 'react-chartjs-2';
 import {Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Tooltip} from "chart.js";
 import zoomPlugin from 'chartjs-plugin-zoom';
-import {getAnalysisCoordinatesHandler, getMetadataColumnsHandler} from "../api/apiHandlers";
+import {getAnalysisCoordinatesHandler} from "../../api/apiHandlers";
 
-export function ScatterPlotNew(props) {
+export function ScatterPlot(props) {
     const chartRef = useRef();
-    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
-    ChartJS.register(zoomPlugin);
+    ChartJS.register(LinearScale, PointElement, LineElement, Tooltip);
+    ChartJS.register(zoomPlugin)
 
     const analysisName = props.analysisName;
 
@@ -15,16 +15,46 @@ export function ScatterPlotNew(props) {
 
     const getAnalysisCoordinates = () => {
         function setCoordinates(coordinates) {
-            let data = []
-            for (let i = 0; i < coordinates.length; i++) {
+            console.log("Coordinates: ", coordinates);
+            const uniqueClusters = [...new Set(coordinates.map(item => item['ClusterID']))];
+            console.log("Unique clusters: ", uniqueClusters);
 
-                if (data.some(e => e.label === "Cluster: " + coordinates[i]['ClusterID'])) {
-                    data.find(e => e.label === "Cluster: " + coordinates[i]['ClusterID']).data.push({
-                        cell: coordinates[i]['Cell'],
-                        x: coordinates[i]['UMAP1'],
-                        y: coordinates[i]['UMAP2']
-                    })
-                } else
+            if (uniqueClusters.length <= 20) {
+                // Treat them as a discrete variable
+                ChartJS.register(Legend);
+                let data = []
+                for (let i = 0; i < coordinates.length; i++) {
+
+                    if (data.some(e => e.label === "Cluster: " + coordinates[i]['ClusterID'])) {
+                        data.find(e => e.label === "Cluster: " + coordinates[i]['ClusterID']).data.push({
+                            cell: coordinates[i]['Cell'],
+                            x: coordinates[i]['UMAP1'],
+                            y: coordinates[i]['UMAP2']
+                        })
+                    } else
+                        data.push({
+                            label: "Cluster: " + coordinates[i]['ClusterID'],
+                            data: [{
+                                cell: coordinates[i]['Cell'],
+                                x: coordinates[i]['UMAP1'],
+                                y: coordinates[i]['UMAP2']
+                            }],
+                            backgroundColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
+                            // borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
+                        })
+                }
+
+
+                setDataSets(data);
+
+            } else {
+                // Treat them as a continuous variable (color)
+                // Scale the color intensity from 0 to 1
+                ChartJS.unregister(Legend);
+                let min = Math.min(...uniqueClusters);
+                let max = Math.max(...uniqueClusters);
+                let data = []
+                for (let i = 0; i < coordinates.length; i++) {
                     data.push({
                         label: "Cluster: " + coordinates[i]['ClusterID'],
                         data: [{
@@ -32,16 +62,20 @@ export function ScatterPlotNew(props) {
                             x: coordinates[i]['UMAP1'],
                             y: coordinates[i]['UMAP2']
                         }],
-                        backgroundColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
+                        backgroundColor: 'rgba(5, 5, 255, ' + (coordinates[i]['ClusterID'] - min) / (max - min) + ')',
                         // borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
                     })
+                }
+
+                setDataSets(data);
+
             }
-            setDataSets(data);
+
         }
 
         getAnalysisCoordinatesHandler(analysisName)
             .then(res => {
-                console.log("res.data", res.data);
+                // console.log("res.data", res.data);
                 setCoordinates(res.data.data);
             })
             .catch(err => {
@@ -54,11 +88,9 @@ export function ScatterPlotNew(props) {
         getAnalysisCoordinates();
     }, [analysisName, props.isChanged]);
 
-
     const options = {
         maintainAspectRatio: true,
         scales: {},
-
         plugins: {
             responsive: true,
             zoom: {
@@ -110,6 +142,7 @@ export function ScatterPlotNew(props) {
             }
         }
     };
+
 
     const data = {
         datasets: dataSets
