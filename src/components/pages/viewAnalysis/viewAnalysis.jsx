@@ -24,6 +24,10 @@ export function ViewAnalysis(props) {
             });
     }
 
+    const onNewGeneEnter = (geneName) =>{
+        console.log(geneName)
+    }
+
 
     return (<div>
         <div>
@@ -42,6 +46,7 @@ export function ViewAnalysis(props) {
                     <PlotSidePanel
                         analysisName={state}
                         onColumnChange={onMetaColumnChange}
+                        onNewGeneEnter={onNewGeneEnter}
                     />
                 </div>
             </div>

@@ -4,8 +4,9 @@ import {DropDownLayoutCompact} from "../../other/dropDownLayoutCompact";
 import {InputLayoutCompact} from "../../other/inputLayoutCompact";
 import {ColorPaletteDropDown} from "../../other/colorPaletteDropDown";
 import {ActionButton} from "../../buttons/actionButton";
+// import {PrimaryButton} from "../../buttons/primaryButton";
 
-export function PlotSidePanel({analysisName, onColumnChange}) {
+export function PlotSidePanel({analysisName, onColumnChange, onNewGeneEnter}) {
 
     const [metadataColumns, setMetadataColumns] = useState([]);
 
@@ -49,6 +50,23 @@ export function PlotSidePanel({analysisName, onColumnChange}) {
 
             <DropDownLayoutCompact label="Optimize distance"
                                    options={["Squared euclidean", "Mean square error"]}/>
+
+            <p>.</p>
+
+            <div className="flex flex-row">
+
+                <InputLayoutCompact inputFor="Name of the gene"
+                                    placeholder="Gene"
+                                    onChange={(event) => {
+                                        onNewGeneEnter(event.target.value)
+                                    }}
+                />
+                <ActionButton type="button"
+                              text="Add"
+                             />
+            </div>
+
+            <AddNewGeneLayout />
 
             <ColorPaletteDropDown label="Select Meta Column"
                                   options={["Meta Data Column", ...metadataColumns]}
