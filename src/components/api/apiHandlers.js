@@ -54,3 +54,9 @@ export function getDataWithMetaDataColumnsHandler(analysisName, column) {
     );
 }
 
+export function getDataUsingGenesHandler(analysisName, genes) {
+    return axiosClient.post(
+        `analysis/get_data_using_genes/`,
+        {analysisName: analysisName, geneList: genes}
+    );
+}

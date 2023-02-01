@@ -2,7 +2,7 @@ import NavBar from "../../navBar";
 import {useLocation} from "react-router-dom";
 import {ScatterPlot} from "./scatterPlot";
 import {useState} from "react";
-import {getDataWithMetaDataColumnsHandler} from "../../api/apiHandlers";
+import {getDataUsingGenesHandler, getDataWithMetaDataColumnsHandler} from "../../api/apiHandlers";
 import {PlotSidePanel} from "./plotSidePanel";
 
 
@@ -10,6 +10,7 @@ export function ViewAnalysis(props) {
     const {state} = useLocation();
 
     const [clusterChanged, setClusterChanged] = useState(0);
+    const [enteredGeneList, setEnteredGeneList] = useState([]);
 
     const onMetaColumnChange = (analysisName, metaColumn) => {
         if (metaColumn === "Meta Data Column") return;
@@ -24,10 +25,32 @@ export function ViewAnalysis(props) {
             });
     }
 
-    const onNewGeneEnter = (geneName) =>{
-        console.log(geneName)
+    const onNewGeneEnter = (geneName) => {
+        if (geneName === "") {
+            setEnteredGeneList([]);
+            return;
+        }
+        setEnteredGeneList((geneName.trim().split(" ")))
+        console.log("New gene: ", enteredGeneList);
     }
 
+    const onSubmitGenes = () => {
+        if (enteredGeneList.length === 0) return;
+        
+        const geneList = [...new Set(enteredGeneList)];
+        console.log("Submit genes: ", geneList);
+        console.log("State: ", state)
+
+        getDataUsingGenesHandler(state, geneList)
+            .then(res => {
+                console.log("New data", res.data);
+                setClusterChanged(clusterChanged + 1);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+    }
 
     return (<div>
         <div>
@@ -47,6 +70,7 @@ export function ViewAnalysis(props) {
                         analysisName={state}
                         onColumnChange={onMetaColumnChange}
                         onNewGeneEnter={onNewGeneEnter}
+                        onSubmitGenes={onSubmitGenes}
                     />
                 </div>
             </div>
