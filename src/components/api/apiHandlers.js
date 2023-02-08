@@ -47,9 +47,19 @@ export function getMetadataColumnsHandler(analysisName) {
     return axiosClient.post(`analysis/get_metadata_columns/`, {analysisName: analysisName});
 }
 
+export function getGeneEXpressionColumnsHandler(analysisName) {
+    return axiosClient.post(`analysis/get_gene_expression_columns/`, {analysisName: analysisName});
+}
+
 export function getDataWithMetaDataColumnsHandler(analysisName, column) {
     return axiosClient.post(
         `analysis/get_data_with_metadata_columns/`,
+        {analysisName: analysisName, columnName: column}
+    );
+}
+export function getDataWithGeneExpressionColumnsHandler(analysisName, column) {
+    return axiosClient.post(
+        `analysis/get_data_with_gene_expression_columns/`,
         {analysisName: analysisName, columnName: column}
     );
 }

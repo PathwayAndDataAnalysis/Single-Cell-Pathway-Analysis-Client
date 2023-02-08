@@ -2,7 +2,11 @@ import NavBar from "../../navBar";
 import {useLocation} from "react-router-dom";
 import {ScatterPlot} from "./scatterPlot";
 import {useState} from "react";
-import {getDataUsingGenesHandler, getDataWithMetaDataColumnsHandler} from "../../api/apiHandlers";
+import {
+    getDataUsingGenesHandler,
+    getDataWithGeneExpressionColumnsHandler,
+    getDataWithMetaDataColumnsHandler
+} from "../../api/apiHandlers";
 import {PlotSidePanel} from "./plotSidePanel";
 
 
@@ -25,6 +29,19 @@ export function ViewAnalysis(props) {
             });
     }
 
+    const onGeneExpressionColumnChange = (analysisName, geneExpressionColumn) => {
+        if (geneExpressionColumn === "Gene Expression Column") return;
+
+        getDataWithGeneExpressionColumnsHandler(analysisName, geneExpressionColumn)
+            .then(res => {
+                console.log("New data", res.data);
+                setClusterChanged(clusterChanged + 1);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    };
+
     const onNewGeneEnter = (geneName) => {
         if (geneName === "") {
             setEnteredGeneList([]);
@@ -36,7 +53,7 @@ export function ViewAnalysis(props) {
 
     const onSubmitGenes = () => {
         if (enteredGeneList.length === 0) return;
-        
+
         const geneList = [...new Set(enteredGeneList)];
         console.log("Submit genes: ", geneList);
         console.log("State: ", state)
@@ -68,6 +85,7 @@ export function ViewAnalysis(props) {
                 <div>
                     <PlotSidePanel
                         analysisName={state}
+                        onGeneExpressionColumnChange={onGeneExpressionColumnChange}
                         onColumnChange={onMetaColumnChange}
                         onNewGeneEnter={onNewGeneEnter}
                         onSubmitGenes={onSubmitGenes}

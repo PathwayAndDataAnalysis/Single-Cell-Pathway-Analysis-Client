@@ -1,14 +1,15 @@
 import {useEffect, useState} from "react";
-import {getMetadataColumnsHandler} from "../../api/apiHandlers";
+import {getGeneEXpressionColumnsHandler, getMetadataColumnsHandler} from "../../api/apiHandlers";
 import {DropDownLayoutCompact} from "../../other/dropDownLayoutCompact";
 import {InputLayoutCompact} from "../../other/inputLayoutCompact";
 import {ColorPaletteDropDown} from "../../other/colorPaletteDropDown";
 import {ActionButton} from "../../buttons/actionButton";
 import {AddNewGeneLayout} from "./addNewGeneLayout";
 
-export function PlotSidePanel({analysisName, onColumnChange, onNewGeneEnter, onSubmitGenes}) {
+export function PlotSidePanel({analysisName, onGeneExpressionColumnChange, onColumnChange, onNewGeneEnter, onSubmitGenes}) {
 
     const [metadataColumns, setMetadataColumns] = useState([]);
+    const [geneExpressionColumns, setGeneExpressionColumns] = useState([]);
 
     const getMetaDataColumns = () => {
         getMetadataColumnsHandler(analysisName)
@@ -20,8 +21,19 @@ export function PlotSidePanel({analysisName, onColumnChange, onNewGeneEnter, onS
             });
     }
 
+    const getGeneExpressionColumns = () => {
+        getGeneEXpressionColumnsHandler(analysisName)
+            .then(res => {
+                setGeneExpressionColumns(res.data.data);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
     useEffect(() => {
         getMetaDataColumns(analysisName);
+        getGeneExpressionColumns();
     }, [analysisName]);
 
 
@@ -55,8 +67,21 @@ export function PlotSidePanel({analysisName, onColumnChange, onNewGeneEnter, onS
 
 
             <AddNewGeneLayout
-                onChange={(event) => {onNewGeneEnter(event.target.value)}}
-                onSubmit={() => {onSubmitGenes()}}
+                onChange={(event) => {
+                    onNewGeneEnter(event.target.value)
+                }}
+                onSubmit={() => {
+                    onSubmitGenes()
+                }}
+            />
+
+            <p>.</p>
+
+            <ColorPaletteDropDown label="Select Expression Gene Column"
+                                  options={["Gene Expression Column", ...geneExpressionColumns]}
+                                  onChange={(event) => {
+                                      onGeneExpressionColumnChange(analysisName, event.target.value);
+                                  }}
             />
 
             <p>.</p>

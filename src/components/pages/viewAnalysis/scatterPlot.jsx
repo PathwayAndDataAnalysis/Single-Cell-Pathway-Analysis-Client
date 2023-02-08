@@ -44,7 +44,6 @@ export function ScatterPlot(props) {
                         })
                 }
 
-
                 setDataSets(data);
 
             } else {
