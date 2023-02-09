@@ -21,7 +21,7 @@ export function ViewAnalysis(props) {
 
         getDataWithMetaDataColumnsHandler(analysisName, metaColumn)
             .then(res => {
-                console.log("New data", res.data);
+                // console.log("New data", res.data);
                 setClusterChanged(clusterChanged + 1);
             })
             .catch(err => {
@@ -34,7 +34,7 @@ export function ViewAnalysis(props) {
 
         getDataWithGeneExpressionColumnsHandler(analysisName, geneExpressionColumn)
             .then(res => {
-                console.log("New data", res.data);
+                // console.log("New data", res.data);
                 setClusterChanged(clusterChanged + 1);
             })
             .catch(err => {
@@ -48,19 +48,19 @@ export function ViewAnalysis(props) {
             return;
         }
         setEnteredGeneList((geneName.trim().split(" ")))
-        console.log("New gene: ", enteredGeneList);
+        // console.log("New gene: ", enteredGeneList);
     }
 
     const onSubmitGenes = () => {
         if (enteredGeneList.length === 0) return;
 
         const geneList = [...new Set(enteredGeneList)];
-        console.log("Submit genes: ", geneList);
-        console.log("State: ", state)
+        // console.log("Submit genes: ", geneList);
+        // console.log("State: ", state)
 
         getDataUsingGenesHandler(state, geneList)
             .then(res => {
-                console.log("New data", res.data);
+                // console.log("New data", res.data);
                 setClusterChanged(clusterChanged + 1);
             })
             .catch(err => {
