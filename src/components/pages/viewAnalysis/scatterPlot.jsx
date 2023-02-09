@@ -54,6 +54,14 @@ export function ScatterPlot(props) {
                 let max = Math.max(...uniqueClusters);
                 let data = []
                 for (let i = 0; i < coordinates.length; i++) {
+                    let clusterVal = coordinates[i]['ClusterID'];
+                    let pointColor = "";
+
+                    if (clusterVal >= 0)
+                        pointColor = 'rgba(255, 1, 1, ' + (clusterVal - min) / (max - min) + ')'
+                    else
+                        pointColor = 'rgba(1, 1, 255, ' + ((-1 * clusterVal) - min) / (max - min) + ')'
+
                     data.push({
                         label: "Cluster: " + coordinates[i]['ClusterID'],
                         data: [{
@@ -61,7 +69,7 @@ export function ScatterPlot(props) {
                             x: coordinates[i]['UMAP1'],
                             y: coordinates[i]['UMAP2']
                         }],
-                        backgroundColor: 'rgba(5, 5, 255, ' + (coordinates[i]['ClusterID'] - min) / (max - min) + ')',
+                        backgroundColor: pointColor,
                         // borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
                     })
                 }
