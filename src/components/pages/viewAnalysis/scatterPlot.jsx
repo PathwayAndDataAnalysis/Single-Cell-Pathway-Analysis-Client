@@ -14,6 +14,10 @@ export function ScatterPlot(props) {
 
     const [dataSets, setDataSets] = useState([]);
 
+    const [minColorValue, setMinColorValue] = useState("0");
+    const [maxColorValue, setMMaxColorValue] = useState("0");
+    const [minMaxHere, setMinMaxHere] = useState("");
+
     const getAnalysisCoordinates = () => {
         function setCoordinates(coordinates) {
             console.log("Coordinates: ", coordinates);
@@ -53,6 +57,19 @@ export function ScatterPlot(props) {
                 ChartJS.unregister(Legend);
                 let min = Math.min(...uniqueClusters);
                 let max = Math.max(...uniqueClusters);
+
+                console.log("Min: ", min, " Max: ", max);
+
+                if (Math.abs(max) > Math.abs(min)) {
+                    setMinColorValue((-1 * max).toFixed(4));
+                    setMMaxColorValue(max.toFixed(4));
+                    setMinMaxHere("Min: " + min.toFixed(4) + " Max: " + max.toFixed(4) + ", These are actual min and max values in the dataset");
+                } else { // min is bigger
+                    setMinColorValue(min.toFixed(4));
+                    setMMaxColorValue((-1 * min).toFixed(4));
+                    setMinMaxHere("Min: " + (min).toFixed(4) + " Max: " + max.toFixed(4) + ", These are actual min and max values in the dataset");
+                }
+
                 let data = []
                 for (let i = 0; i < coordinates.length; i++) {
                     let clusterVal = coordinates[i]['ClusterID'];
@@ -168,10 +185,13 @@ export function ScatterPlot(props) {
                 options={options}
             />
             <div>
-                <img className={"ml-8 mt-8 mr-8"} src={color_bar} height={"500"} width={"500"}/>
+                <img className={"ml-8 mt-8 mr-8"} src={color_bar} height={"500"} width={"380"}/>
                 <div className={"flex flex-row ml-6"}>
-                    <p>min</p>
-                    <p className={"ml-20"}>max</p>
+                    <p>min = {minColorValue}</p>
+                    <p className={"ml-60"}>max = {maxColorValue}</p>
+                </div>
+                <div className={"flex flex-row ml-6"}>
+                    <p>{minMaxHere}</p>
                 </div>
             </div>
         </>
