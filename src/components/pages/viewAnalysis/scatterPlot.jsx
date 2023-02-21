@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {Scatter} from 'react-chartjs-2';
 import {Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Tooltip} from "chart.js";
 import zoomPlugin from 'chartjs-plugin-zoom';
+import color_bar from '../../../images/color_bar.png'
 import {getAnalysisCoordinatesHandler} from "../../api/apiHandlers";
 
 export function ScatterPlot(props) {
@@ -57,10 +58,12 @@ export function ScatterPlot(props) {
                     let clusterVal = coordinates[i]['ClusterID'];
                     let pointColor = "";
 
-                    if (clusterVal >= 0)
-                        pointColor = 'rgba(255, 1, 1, ' + (clusterVal - min) / (max - min) + ')'
+                    if (clusterVal > 0)
+                        pointColor = 'rgba(255, 0, 0, ' + (clusterVal - min) / (max - min) + ')'
+                    else if (clusterVal === "0.0" || clusterVal === "-0.0")
+                        pointColor = "rgba(255, 255, 255, 0)"
                     else
-                        pointColor = 'rgba(1, 1, 255, ' + ((-1 * clusterVal) - min) / (max - min) + ')'
+                        pointColor = 'rgba(0, 0, 255, ' + (Math.abs(clusterVal) - min) / (max - min) + ')'
 
                     data.push({
                         label: "Cluster: " + coordinates[i]['ClusterID'],
@@ -156,12 +159,21 @@ export function ScatterPlot(props) {
     };
 
     return (
-        <Scatter
-            ref={chartRef}
-            width='95%'
-            height='90%'
-            data={data}
-            options={options}
-        />
+        <>
+            <Scatter
+                ref={chartRef}
+                width='95%'
+                height='90%'
+                data={data}
+                options={options}
+            />
+            <div>
+                <img className={"ml-8 mt-8 mr-8"} src={color_bar} height={"500"} width={"500"}/>
+                <div className={"flex flex-row ml-6"}>
+                    <p>min</p>
+                    <p className={"ml-20"}>max</p>
+                </div>
+            </div>
+        </>
     );
 }
