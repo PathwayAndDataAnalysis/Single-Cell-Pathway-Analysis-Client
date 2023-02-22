@@ -4,6 +4,7 @@ import {Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Toolti
 import zoomPlugin from 'chartjs-plugin-zoom';
 import color_bar from '../../../images/color_bar.png'
 import {getAnalysisCoordinatesHandler} from "../../api/apiHandlers";
+import {Checkbox} from "@material-tailwind/react";
 
 export function ScatterPlot(props) {
     const chartRef = useRef();
@@ -17,6 +18,9 @@ export function ScatterPlot(props) {
     const [minColorValue, setMinColorValue] = useState("0");
     const [maxColorValue, setMMaxColorValue] = useState("0");
     const [minMaxHere, setMinMaxHere] = useState("");
+
+    const [isPositive, setIsPositive] = useState(false);
+    const [isNegative, setIsNegative] = useState(false);
 
     const getAnalysisCoordinates = () => {
         function setCoordinates(coordinates) {
@@ -75,12 +79,19 @@ export function ScatterPlot(props) {
                     let clusterVal = coordinates[i]['ClusterID'];
                     let pointColor = "";
 
-                    if (clusterVal > 0)
-                        pointColor = 'rgba(255, 0, 0, ' + (clusterVal - min) / (max - min) + ')'
-                    else if (clusterVal === "0.0" || clusterVal === "-0.0")
+                    if (clusterVal > 0) {
+                        if (isPositive)
+                            pointColor = 'rgba(255, 0, 0, 0)'
+                        else
+                            pointColor = 'rgba(255, 0, 0, ' + (clusterVal - min) / (max - min) + ')'
+                    } else if (clusterVal === "0.0" || clusterVal === "-0.0" || clusterVal === 0 || clusterVal === "0")
                         pointColor = "rgba(255, 255, 255, 0)"
-                    else
-                        pointColor = 'rgba(0, 0, 255, ' + (Math.abs(clusterVal) - min) / (max - min) + ')'
+                    else {
+                        if (isNegative)
+                            pointColor = 'rgba(0, 0, 255, 0)'
+                        else
+                            pointColor = 'rgba(0, 0, 255, ' + (Math.abs(clusterVal) - min) / (max - min) + ')'
+                    }
 
                     data.push({
                         label: "Cluster: " + coordinates[i]['ClusterID'],
@@ -113,7 +124,7 @@ export function ScatterPlot(props) {
 
     useEffect(() => {
         getAnalysisCoordinates();
-    }, [analysisName, props.isChanged]);
+    }, [analysisName, props.isChanged, isPositive, isNegative]);
 
     const options = {
         maintainAspectRatio: true,
@@ -192,6 +203,23 @@ export function ScatterPlot(props) {
                 </div>
                 <div className={"flex flex-row ml-6"}>
                     <p>{minMaxHere}</p>
+                </div>
+            </div>
+
+            <div className={"ml-6"}>
+                <div className={"flex flex-row"}>
+                    <Checkbox label={"Remove Positive tf scores"}
+                              onChange={() => {
+                                  setIsPositive(!isPositive)
+                              }}
+                    />
+                </div>
+                <div className={"flex flex-row"}>
+                    <Checkbox label={"Remove Negative tf scores"}
+                              onChange={() => {
+                                  setIsNegative(!isNegative)
+                              }}
+                    />
                 </div>
             </div>
         </>
