@@ -25,6 +25,7 @@ export function ScatterPlot(props) {
     const getAnalysisCoordinates = () => {
         function setCoordinates(coordinates) {
             console.log("Coordinates: ", coordinates);
+            console.log("Coordinates Type: ", typeof coordinates);
             const uniqueClusters = [...new Set(coordinates.map(item => item['ClusterID']))];
             console.log("Unique clusters: ", uniqueClusters);
 
@@ -104,9 +105,7 @@ export function ScatterPlot(props) {
                         // borderColor: '#' + (Math.random() * 0xFFFFFF << 0).toString(16),
                     })
                 }
-
                 setDataSets(data);
-
             }
 
         }
@@ -129,6 +128,10 @@ export function ScatterPlot(props) {
     const options = {
         maintainAspectRatio: true,
         scales: {},
+        animation: {
+            duration: 1000,
+            easing: 'easeInOutQuad'
+        },
         plugins: {
             responsive: true,
             zoom: {
